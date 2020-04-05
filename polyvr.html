@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="shortcut icon" href="#"> <!-- removes favicon.ico bullshit -->
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<style>
+	#progressBar {
+		display: none;
+		width: 0%;
+		height: 30px;
+		background-color: #4CAF50;
+		text-align: center; /* To center it horizontally (if you want) */
+		line-height: 30px; /* To center it vertically */
+		color: white;
+		margin: 4px;
+	}
+	</style>
+</head>
+
+<body>
+	<!-- Create the canvas that the C++ code will draw into -->
+	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+
+	<script src="storage.js"></script>
+
+	<!-- Allow the C++ to access the canvas element --> 
+	<div id="progressBar"></div>
+	<script type='text/javascript'>
+		var canv = document.getElementById('canvas');
+		var Module = {
+		    canvas: canv,
+		    arguments: [],
+		    preRun: []
+		};
+
+		Module.arguments.push('--application=Terrain2.pvr');
+
+		var onPreRun = function() {
+			ENV.PYTHONHOME = "/python:/python";
+		};
+
+		Module.preRun.push(onPreRun)
+
+		var onInit = function() {
+			getRessource('polyvr.wasm', true); // force reload for developing
+
+		};
+
+		function preloadFile(path) {
+			//console.log('preloadFile '+path);
+			FS.createPreloadedFile('/', path, path, true, true);	
+		};
+
+		function scanDir(path, onGet) {
+			//console.log('scanDir '+path);
+			req = new XMLHttpRequest();
+			req.onreadystatechange = function() {
+				if (req.readyState == 4 && req.status === 200) {
+					var data = req.responseText.split('|||');
+					onGet( { 'dirs':data[0].split('|'), 'files':data[1].split('|') } )
+				}
+			}
+			req.open("GET", 'scanDir.php?path='+path, true);
+			req.send(null);
+		}
+
+		function preloadFolder(path, stack = []) {
+			console.log('preloadFolder '+path);
+			FS.mkdir('/'+path);
+			scanDir(path, function(content) {
+				var files = content.files;
+				if (files.length > 0 && files[0] != "") {
+					for (var file in content.files) preloadFile(path+"/"+files[file]);
+				}
+				var dirs = content.dirs;
+				if (dirs.length > 0 && dirs[0] != "") {
+					for(var i=0;i<dirs.length;i++) dirs[i]=path+"/"+dirs[i];
+					stack.push.apply(stack, dirs);
+				}
+				if (stack.length > 0) preloadFolder(stack.pop(), stack);
+			});
+		};
+
+		var onScriptLoaded = function() { 
+			preloadFile('Browser.xml');
+			preloadFile('animations.pvr');
+			preloadFile('Terrain2.pvr');
+			preloadFile('buildingVis.pvr');
+			preloadFile('Mono.ttf');
+			preloadFile('theAnnChars.png');
+			//preloadFolder('python');
+		};
+
+		var onLoaded = function() { 
+			console.log(' loaded polyvr wasm!!'); 
+			var script = document.createElement('script');
+			script.onload = function() { onScriptLoaded(); };
+			script.src = 'polyvr.js';
+			document.body.appendChild(script);
+
+			// changes in polyvr.js:
+			//
+			// getBinaryPromise returns directly storage.response
+			//  function getBinaryPromise() {
+			//    if (storage.ressource) {
+			//      console.log('use stored wasm binary!');
+			//      return new Promise(function(resolve, reject) { resolve(storage.ressource); });
+			//    }
+			//
+			// and instantiateAsync get an additional check for storage
+			//   function instantiateAsync() {
+			//     if (!wasmBinary && !storage.ressource &&
+		};
+
+		initStorage( onInit, onLoaded );
+
+		function wasmStr(s) {
+			ptr = allocate(intArrayFromString(s), 'i8', 0);
+			setTimeout(function(){ _free(ptr); }, 5000);
+			return ptr;
+		}
+
+		function testSensors() {
+			console.log(' test sensors'); 
+			__ZN3OSG20PolyVR_triggerScriptEPKc(wasmStr('startFakeSensors'));
+		}
+
+		function stop() {
+			console.log(' stop PolyVR!'); 
+			__ZN3OSG15PolyVR_shutdownEv();
+		}
+
+		function reload() {
+			console.log(' reload scene!');
+			FS.unlink('buildingVis.pvr');
+			preloadFile('buildingVis.pvr');
+			setTimeout( function() { __ZN3OSG18PolyVR_reloadSceneEv(); }, 2000 );
+		}
+	</script>
+
+	</br>
+	<button onclick="testSensors()">test sensors</button>
+	</br>
+	<button onclick="reload()">reload</button>
+	</br>
+	<button onclick="stop()">stop</button>
+</body>
+
+</html>
