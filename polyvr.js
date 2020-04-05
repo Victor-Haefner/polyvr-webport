@@ -1207,11 +1207,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 16367376,
+    STACK_BASE = 16367440,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 11124496,
-    DYNAMIC_BASE = 16367376,
-    DYNAMICTOP_PTR = 11124320;
+    STACK_MAX = 11124560,
+    DYNAMIC_BASE = 16367440,
+    DYNAMICTOP_PTR = 11124384;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1731,7 +1731,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 11123472;
+// STATICTOP = STATIC_BASE + 11123536;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1925,7 +1925,7 @@ var ASM_CONSTS = [];
   
       var pointer = ___cxa_is_pointer_type(throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 11124480;
+      var buffer = 11124544;
       HEAP32[((buffer)>>2)]=thrown;
       thrown = buffer;
       // The different catch blocks are denoted by different types.
@@ -7509,11 +7509,11 @@ var ASM_CONSTS = [];
     }
 
   
-  var ___tm_current=11124336;
+  var ___tm_current=11124400;
   
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 11124384, 4), 11124384);
+  var ___tm_timezone=(stringToUTF8("GMT", 11124448, 4), 11124448);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
@@ -7577,7 +7577,7 @@ var ASM_CONSTS = [];
     }
   
   
-  var ___tm_formatted=11124400;
+  var ___tm_formatted=11124464;
   
   function _mktime(tmPtr) {
       _tzset();
@@ -8531,7 +8531,7 @@ var ASM_CONSTS = [];
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 11124320;
+      return 11124384;
     }
 
   
@@ -12228,11 +12228,11 @@ asm["_ZN3OSG18PolyVR_reloadSceneEv"] = function() {
   return real___ZN3OSG18PolyVR_reloadSceneEv.apply(null, arguments);
 };
 
-var real___ZN3OSG20PolyVR_triggerScriptEPKc = asm["_ZN3OSG20PolyVR_triggerScriptEPKc"];
-asm["_ZN3OSG20PolyVR_triggerScriptEPKc"] = function() {
+var real___ZN3OSG20PolyVR_triggerScriptEPKcPS1_i = asm["_ZN3OSG20PolyVR_triggerScriptEPKcPS1_i"];
+asm["_ZN3OSG20PolyVR_triggerScriptEPKcPS1_i"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real___ZN3OSG20PolyVR_triggerScriptEPKc.apply(null, arguments);
+  return real___ZN3OSG20PolyVR_triggerScriptEPKcPS1_i.apply(null, arguments);
 };
 
 var real__fflush = asm["fflush"];
@@ -13569,10 +13569,10 @@ var __ZN3OSG18PolyVR_reloadSceneEv = Module["__ZN3OSG18PolyVR_reloadSceneEv"] = 
   return Module["asm"]["_ZN3OSG18PolyVR_reloadSceneEv"].apply(null, arguments)
 };
 
-var __ZN3OSG20PolyVR_triggerScriptEPKc = Module["__ZN3OSG20PolyVR_triggerScriptEPKc"] = function() {
+var __ZN3OSG20PolyVR_triggerScriptEPKcPS1_i = Module["__ZN3OSG20PolyVR_triggerScriptEPKcPS1_i"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_ZN3OSG20PolyVR_triggerScriptEPKc"].apply(null, arguments)
+  return Module["asm"]["_ZN3OSG20PolyVR_triggerScriptEPKcPS1_i"].apply(null, arguments)
 };
 
 var _fflush = Module["_fflush"] = function() {
