@@ -11133,6 +11133,8 @@ var ASM_CONSTS = [];
       // Ignore arguments
       GLUT.initTime = Date.now();
   
+      var device = Module["canvas"];
+
       var isTouchDevice = 'ontouchstart' in document.documentElement;
       if (isTouchDevice) {
         // onMouseButtonDown, onMouseButtonUp and onMousemove handlers
@@ -11144,20 +11146,20 @@ var ASM_CONSTS = [];
         // are only looking at single finger touches to emulate left click,
         // so we can use workaround and convert all touch events in mouse
         // events. See touchHandler.
-        window.addEventListener("touchmove", GLUT.touchHandler, true);
-        window.addEventListener("touchstart", GLUT.touchHandler, true);
-        window.addEventListener("touchend", GLUT.touchHandler, true);
+        device.addEventListener("touchmove", GLUT.touchHandler, true);
+        device.addEventListener("touchstart", GLUT.touchHandler, true);
+        device.addEventListener("touchend", GLUT.touchHandler, true);
       }
   
-      window.addEventListener("keydown", GLUT.onKeydown, true);
-      window.addEventListener("keyup", GLUT.onKeyup, true);
-      window.addEventListener("mousemove", GLUT.onMousemove, true);
-      window.addEventListener("mousedown", GLUT.onMouseButtonDown, true);
-      window.addEventListener("mouseup", GLUT.onMouseButtonUp, true);
+      device.addEventListener("keydown", GLUT.onKeydown, true);
+      device.addEventListener("keyup", GLUT.onKeyup, true);
+      device.addEventListener("mousemove", GLUT.onMousemove, true);
+      device.addEventListener("mousedown", GLUT.onMouseButtonDown, true);
+      device.addEventListener("mouseup", GLUT.onMouseButtonUp, true);
       // IE9, Chrome, Safari, Opera
-      window.addEventListener("mousewheel", GLUT.onMouseWheel, true);
+      device.addEventListener("mousewheel", GLUT.onMouseWheel, true);
       // Firefox
-      window.addEventListener("DOMMouseScroll", GLUT.onMouseWheel, true);
+      device.addEventListener("DOMMouseScroll", GLUT.onMouseWheel, true);
   
       Browser.resizeListeners.push(function(width, height) {
         if (GLUT.reshapeFunc) {

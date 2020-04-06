@@ -36,7 +36,7 @@
 		    preRun: []
 		};
 
-		Module.arguments.push('--application=Terrain2.pvr');
+		Module.arguments.push('--application=PROJECT.pvr');
 
 		var onPreRun = function() {
 			ENV.PYTHONHOME = "/python:/python";
@@ -86,11 +86,8 @@
 
 		var onScriptLoaded = function() { 
 			preloadFile('Browser.xml');
-			preloadFile('animations.pvr');
-			preloadFile('Terrain2.pvr');
-			preloadFile('buildingVis.pvr');
+			preloadFile('PROJECT.pvr');
 			preloadFile('Mono.ttf');
-			preloadFile('theAnnChars.png');
 			//preloadFolder('python');
 		};
 
@@ -135,8 +132,8 @@
 
 		function reload() {
 			console.log(' reload scene!');
-			FS.unlink('buildingVis.pvr');
-			preloadFile('buildingVis.pvr');
+			FS.unlink('PROJECT.pvr');
+			preloadFile('PROJECT.pvr');
 			setTimeout( function() { __ZN3OSG18PolyVR_reloadSceneEv(); }, 2000 );
 		}
 	</script>
