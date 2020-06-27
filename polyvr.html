@@ -7,16 +7,25 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 	<style>
-	#progressBar {
-		display: none;
-		width: 0%;
-		height: 30px;
-		background-color: #4CAF50;
-		text-align: center; /* To center it horizontally (if you want) */
-		line-height: 30px; /* To center it vertically */
-		color: white;
-		margin: 4px;
-	}
+		body {
+			margin: 0px;
+		}
+
+		#progressBar {
+			display: none;
+			width: 0%;
+			height: 30px;
+			background-color: #4CAF50;
+			text-align: center; /* To center it horizontally (if you want) */
+			line-height: 30px; /* To center it vertically */
+			color: white;
+			margin: 0px;
+		}
+
+		#canvas {
+			width: 100%;
+			height: 100%;
+		}
 	</style>
 </head>
 
@@ -36,6 +45,16 @@
 		    preRun: []
 		};
 
+		function checkResize(time) {
+		  var displayWidth  = canv.clientWidth;
+		  var displayHeight = canv.clientHeight;
+		  if (canv.width  != displayWidth || canv.height != displayHeight) {
+		    console.log("checkResize "+time);
+		    if (typeof _glutReshapeWindow === "function") _glutReshapeWindow(displayWidth, displayHeight);
+		  }
+		  window.requestAnimationFrame(checkResize);
+		}
+
 		Module.arguments.push('--application=PROJECT.pvr');
 
 		var onPreRun = function() {
@@ -50,7 +69,7 @@
 		};
 
 		function preloadFile(path) {
-			//console.log('preloadFile '+path);
+			console.log('preloadFile: '+path);
 			FS.createPreloadedFile('/', path, path, true, true);	
 		};
 
@@ -85,6 +104,7 @@
 		};
 
 		var onScriptLoaded = function() { 
+			console.log(' preload files'); 
 			preloadFile('Browser.xml');
 			preloadFile('PROJECT.pvr');
 			preloadFile('Mono.ttf');
@@ -92,37 +112,21 @@
 		};
 
 		var onLoaded = function() { 
-			console.log(' loaded polyvr wasm!!'); 
+			console.log(' loaded polyvr wasm!'); 
 			var script = document.createElement('script');
 			script.onload = function() { onScriptLoaded(); };
 			script.src = 'polyvr.js';
 			document.body.appendChild(script);
-
-			// changes in polyvr.js:
-			//
-			// getBinaryPromise returns directly storage.response
-			//  function getBinaryPromise() {
-			//    if (storage.ressource) {
-			//      console.log('use stored wasm binary!');
-			//      return new Promise(function(resolve, reject) { resolve(storage.ressource); });
-			//    }
-			//
-			// and instantiateAsync get an additional check for storage
-			//   function instantiateAsync() {
-			//     if (!wasmBinary && !storage.ressource &&
+			checkResize(0); // start resize check loop
 		};
 
 		initStorage( onInit, onLoaded );
 
+		// utils functions
 		function wasmStr(s) {
 			ptr = allocate(intArrayFromString(s), 'i8', 0);
 			setTimeout(function(){ _free(ptr); }, 5000);
 			return ptr;
-		}
-
-		function testSensors() {
-			console.log(' test sensors'); 
-			__ZN3OSG20PolyVR_triggerScriptEPKc(wasmStr('startFakeSensors'));
 		}
 
 		function stop() {
@@ -137,13 +141,6 @@
 			setTimeout( function() { __ZN3OSG18PolyVR_reloadSceneEv(); }, 2000 );
 		}
 	</script>
-
-	</br>
-	<button onclick="testSensors()">test sensors</button>
-	</br>
-	<button onclick="reload()">reload</button>
-	</br>
-	<button onclick="stop()">stop</button>
 </body>
 
 </html>
