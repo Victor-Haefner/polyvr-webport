@@ -70,8 +70,16 @@
 		};
 
 		function preloadFile(path) {
-			console.log('preloadFile: '+path);
-			FS.createPreloadedFile('/', path, path, true, true);	
+			var parent = '/';
+			var file = path;
+			if (path.indexOf('/') > -1) {
+				parent = '/' + path.replace(/\/[^\/]+$/, '');
+				FS.createPath('/', parent, true, true);
+				parent = '/'+parent;
+				file = path.split("/").pop();
+			}
+			console.log('preloadFile: ' + path + ", file: " + file + " in parent folder: " + parent);
+			FS.createPreloadedFile(parent, file, path, true, true);		
 		};
 
 		function scanDir(path, onGet) {
