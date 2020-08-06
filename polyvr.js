@@ -602,8 +602,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 107408,
-  'maximum': 107408 + 0,
+  'initial': 107787,
+  'maximum': 107787 + 0,
   'element': 'anyfunc'
 });
 
@@ -1207,11 +1207,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 16544800,
+    STACK_BASE = 16597776,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 11301920,
-    DYNAMIC_BASE = 16544800,
-    DYNAMICTOP_PTR = 11301744;
+    STACK_MAX = 11354896,
+    DYNAMIC_BASE = 16597776,
+    DYNAMICTOP_PTR = 11354720;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1731,7 +1731,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 11300896;
+// STATICTOP = STATIC_BASE + 11353872;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1925,7 +1925,7 @@ var ASM_CONSTS = [];
   
       var pointer = ___cxa_is_pointer_type(throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 11301904;
+      var buffer = 11354880;
       HEAP32[((buffer)>>2)]=thrown;
       thrown = buffer;
       // The different catch blocks are denoted by different types.
@@ -7509,11 +7509,11 @@ var ASM_CONSTS = [];
     }
 
   
-  var ___tm_current=11301760;
+  var ___tm_current=11354736;
   
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 11301808, 4), 11301808);
+  var ___tm_timezone=(stringToUTF8("GMT", 11354784, 4), 11354784);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
@@ -7577,7 +7577,7 @@ var ASM_CONSTS = [];
     }
   
   
-  var ___tm_formatted=11301824;
+  var ___tm_formatted=11354800;
   
   function _mktime(tmPtr) {
       _tzset();
@@ -8531,7 +8531,7 @@ var ASM_CONSTS = [];
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 11301744;
+      return 11354720;
     }
 
   
@@ -11149,8 +11149,8 @@ var ASM_CONSTS = [];
         Module["canvas"].addEventListener("touchend", GLUT.touchHandler, true);
       }
   
-      Module["canvas"].addEventListener("keydown", GLUT.onKeydown, true);
-      Module["canvas"].addEventListener("keyup", GLUT.onKeyup, true);
+      window.addEventListener("keydown", GLUT.onKeydown, true);
+      window.addEventListener("keyup", GLUT.onKeyup, true);
       Module["canvas"].addEventListener("mousemove", GLUT.onMousemove, true);
       Module["canvas"].addEventListener("mousedown", GLUT.onMouseButtonDown, true);
       Module["canvas"].addEventListener("mouseup", GLUT.onMouseButtonUp, true);
@@ -13010,6 +13010,13 @@ asm["dynCall_viiddi"] = function() {
   return real_dynCall_viiddi.apply(null, arguments);
 };
 
+var real_dynCall_di = asm["dynCall_di"];
+asm["dynCall_di"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real_dynCall_di.apply(null, arguments);
+};
+
 var real_dynCall_viidd = asm["dynCall_viidd"];
 asm["dynCall_viidd"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
@@ -13169,13 +13176,6 @@ asm["dynCall_iijii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real_dynCall_iijii.apply(null, arguments);
-};
-
-var real_dynCall_di = asm["dynCall_di"];
-asm["dynCall_di"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real_dynCall_di.apply(null, arguments);
 };
 
 var real_dynCall_iiiiiiiiiiiiiiii = asm["dynCall_iiiiiiiiiiiiiiii"];
@@ -14253,6 +14253,12 @@ var dynCall_viiddi = Module["dynCall_viiddi"] = function() {
   return Module["asm"]["dynCall_viiddi"].apply(null, arguments)
 };
 
+var dynCall_di = Module["dynCall_di"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["dynCall_di"].apply(null, arguments)
+};
+
 var dynCall_viidd = Module["dynCall_viidd"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -14389,12 +14395,6 @@ var dynCall_iijii = Module["dynCall_iijii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["dynCall_iijii"].apply(null, arguments)
-};
-
-var dynCall_di = Module["dynCall_di"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_di"].apply(null, arguments)
 };
 
 var dynCall_iiiiiiiiiiiiiiii = Module["dynCall_iiiiiiiiiiiiiiii"] = function() {
