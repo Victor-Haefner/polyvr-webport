@@ -602,8 +602,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 107787,
-  'maximum': 107787 + 0,
+  'initial': 107942,
+  'maximum': 107942 + 0,
   'element': 'anyfunc'
 });
 
@@ -1207,11 +1207,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 16597776,
+    STACK_BASE = 16616528,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 11354896,
-    DYNAMIC_BASE = 16597776,
-    DYNAMICTOP_PTR = 11354720;
+    STACK_MAX = 11373648,
+    DYNAMIC_BASE = 16616528,
+    DYNAMICTOP_PTR = 11373472;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1731,7 +1731,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 11353872;
+// STATICTOP = STATIC_BASE + 11372624;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1925,7 +1925,7 @@ var ASM_CONSTS = [];
   
       var pointer = ___cxa_is_pointer_type(throwntype);
       // can_catch receives a **, add indirection
-      var buffer = 11354880;
+      var buffer = 11373632;
       HEAP32[((buffer)>>2)]=thrown;
       thrown = buffer;
       // The different catch blocks are denoted by different types.
@@ -7509,11 +7509,11 @@ var ASM_CONSTS = [];
     }
 
   
-  var ___tm_current=11354736;
+  var ___tm_current=11373488;
   
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 11354784, 4), 11354784);
+  var ___tm_timezone=(stringToUTF8("GMT", 11373536, 4), 11373536);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
@@ -7577,7 +7577,7 @@ var ASM_CONSTS = [];
     }
   
   
-  var ___tm_formatted=11354800;
+  var ___tm_formatted=11373552;
   
   function _mktime(tmPtr) {
       _tzset();
@@ -8531,7 +8531,7 @@ var ASM_CONSTS = [];
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 11354720;
+      return 11373472;
     }
 
   
