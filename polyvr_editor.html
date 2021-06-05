@@ -31,13 +31,15 @@
 		}
 
 		#toolbar {
-			display: block;
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
 			position: fixed;
 			left: 0vw;
 			top: 0vh;
 			width: 50vw;
 			height: 5vh;
-			background-color: #555599;
+			background-color: #88bbdd;
 		}
 
 		#scripts {
@@ -49,7 +51,7 @@
 			top: 5vh;
 			width: 10vw;	
 			height: 95vh;
-			background-color: #444444;
+			background-color: #cccccc;
 		}
 
 		#parameters {
@@ -59,7 +61,7 @@
 			top: 5vh;	
 			width: 40vw;
 			height: 15vh;
-			background-color: #222222;
+			background-color: #dddddd;
 		}
 
 		#editor {
@@ -71,19 +73,48 @@
 			height: 80vh;
 			white-space: pre;
 		}
+
+		.script {
+			margin: 0.3vh;
+		}
+
+		.selectedScript {
+			background-color: #aaddff;
+		}
+
+		.toolButton {
+			margin: 0.5vh;
+			height: 4vh;
+			width: 4vh;
+		}
+
+		.disabledButton {
+			display: none;		
+		}
 	</style>
 
 	<script type='text/javascript'>
-		function updateScriptCore(sName) {
+		var selectedScriptButton = undefined;
+
+		function selectScript(button, sName) {
+			// set editor content
 			var editor = document.getElementById('editor');
 			editor.innerHTML = "";
 
-			sNamePtr = allocate(intArrayFromString(sName), 0); // TODO: try out stringToUTF8
-
-			var core = Module.UTF8ToString(__ZN3OSG20PolyVR_getScriptCoreEPKc(sNamePtr));
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			var sData = __ZN3OSG20PolyVR_getScriptCoreEPKc(sNamePtr);
+			var core = Module.UTF8ToString(sData);
 			editor.innerHTML = core;
-
 			_free(sNamePtr);
+
+			button.className = 'script selectedScript';
+			if (selectedScriptButton != undefined) selectedScriptButton.className = 'script';
+			selectedScriptButton = button;
+
+			// update toolbar
+			var toolbar = document.getElementById('toolbar');
+			var children = toolbar.children;
+			for (var i=0; i<children.length; i++) children[i].className = "toolButton";
 		}
 
 		function updateScriptsList() {
@@ -91,25 +122,58 @@
 			scripts.innerHTML = "";
 
 			var Nscripts = __ZN3OSG18PolyVR_getNScriptsEv();
+			if (Nscripts == 0) {
+				setTimeout(updateScriptsList, 3000);
+				return;
+			}
 
 			for (var i=0; i<Nscripts; i++) {
 				var sName = Module.UTF8ToString(__ZN3OSG23PolyVR_getIthScriptNameEi(i));
 				var b = document.createElement('button');
 				b.innerHTML = sName;
-				b.onclick = function(name) { return function() { updateScriptCore(name); }; }(sName);
+				b.className = 'script';
+				b.onclick = function(name) { return function() { selectScript(this, name); }; }(sName);
 				scripts.appendChild(b);
 			}		
+		}
+
+		function newScript() {
+		}
+
+		function saveScript() {
+			var editor = document.getElementById('editor');
+			var sName = selectedScriptButton.innerHTML;
+			var sCore = editor.innerHTML;
+			var n = sCore.search("\n");
+			if (n != -1) {
+				sCore = sCore.substring(n);
+			}
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			corePtr = allocate(intArrayFromString(sCore), 0);
+			__ZN3OSG20PolyVR_setScriptCoreEPKcS1_(sNamePtr, corePtr);
+			_free(sNamePtr);
+			_free(corePtr);
+		}
+
+		function executeScript() {
+			saveScript();
+			var sName = selectedScriptButton.innerHTML;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			__ZN3OSG20PolyVR_triggerScriptEPKcPS1_i(sNamePtr, [], 0);
+			_free(sNamePtr);
 		}
 	</script>
 </head>
 
 <body>
 	<div id="toolbar">
-		<button onclick='updateScriptsList()'>test</button>
+		<button class="toolButton" onclick='newScript()'>N</button>
+		<button class="toolButton disabledButton" onclick='saveScript()'>S</button>
+		<button class="toolButton disabledButton" onclick='executeScript()'>E</button>
 	</div>
-	<div id="parameters">Parameters</div>
-	<div id="scripts">Scripts</div>
-	<div id="editor">Editor</div>
+	<div id="parameters"></div>
+	<div id="scripts"></div>
+	<div id="editor" contenteditable="true"></div>
 
 	<!-- Create the canvas that the C++ code will draw into -->
 	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
@@ -142,11 +206,16 @@
 			ENV.PYTHONHOME = "/python:/python";
 		};
 
-		Module.preRun.push(onPreRun)
+		var onPostRun = function() {
+			console.log("------- onPostRun -------");
+			updateScriptsList();
+		};
+
+		Module.preRun.push(onPreRun);
+		Module.onRuntimeInitialized = onPostRun;
 
 		var onInit = function() {
 			getRessource('polyvr.wasm', true); // force reload for developing
-
 		};
 
 		function preloadFile(path) {
