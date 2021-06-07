@@ -55,7 +55,7 @@
 		}
 
 		#parameters {
-			display: block;
+			display: flex;
 			position: fixed;
 			left: 10vw;
 			top: 5vh;	
@@ -72,6 +72,50 @@
 			width: 40vw;
 			height: 80vh;
 			white-space: pre;
+		}
+
+		#options {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
+			position: absolute;
+			width: 15%;
+			height: 100%;
+		}
+
+		#trigger {
+			display: flex;
+			flex-direction: row;
+			position: absolute;
+			width: 55%;
+			height: 100%;
+			left: 15%;
+			top: 0%;
+		}
+
+		#arguments {
+			display: flex;
+			flex-direction: row;
+			position: absolute;
+			width: 30%;
+			height: 100%;
+			left: 70%;
+			top: 0%;
+			background-color: #ccc;
+		}
+
+		.column {
+			flex-grow: 1;
+			height: 100%;
+			border: 1px solid #aaa;
+		}
+
+		.header {
+			display: flex;
+			background-color: #aaa;
+			justify-content: center;
+			flex-direction: row;
+			width: 100%;
 		}
 
 		.script {
@@ -91,10 +135,29 @@
 		.disabledButton {
 			display: none;		
 		}
+
+		.newEntry {
+			display: flex;
+			color: #444;
+			font-style: italic;
+			justify-content: center;
+			width: 100%;
+			background: none;		
+		}
+
+		.paramEntry {
+			display: flex;
+			color: #444;
+			font-weight: bold;
+			justify-content: center;
+			width: 100%;
+			background: none;		
+		}
 	</style>
 
 	<script type='text/javascript'>
 		var selectedScriptButton = undefined;
+		var selectedScriptType = undefined;
 
 		function selectScript(button, sName) {
 			// set editor content
@@ -105,7 +168,6 @@
 			var sData = __ZN3OSG20PolyVR_getScriptCoreEPKc(sNamePtr);
 			var core = Module.UTF8ToString(sData);
 			editor.innerHTML = core;
-			_free(sNamePtr);
 
 			button.className = 'script selectedScript';
 			if (selectedScriptButton != undefined) selectedScriptButton.className = 'script';
@@ -115,6 +177,80 @@
 			var toolbar = document.getElementById('toolbar');
 			var children = toolbar.children;
 			for (var i=0; i<children.length; i++) children[i].className = "toolButton";
+
+			// update type
+			var options = document.getElementById('options');
+			options.children[0].className = 'stype';
+			options.children[1].className = 'stype';
+			options.children[2].className = 'stype';
+			var stype = Module.UTF8ToString(__ZN3OSG20PolyVR_getScriptTypeEPKc(sNamePtr));
+			if (stype == 'Python') options.children[0].className = 'stype selectedScript';
+			if (stype == 'GLSL')   options.children[1].className = 'stype selectedScript';
+			if (stype == 'HTML')   options.children[2].className = 'stype selectedScript';
+			selectedScriptType = stype;
+
+			// clear trigger
+			triggers = document.getElementById('trigger');
+			cols = triggers.children;
+			for (var i=0; i<cols.length; i++) {
+				var col = cols[i];
+				var header = col.children[0];
+				
+				if (i == 0) {
+					var addBtn = col.children[col.children.length-1];
+					col.innerHTML = "";	
+					col.appendChild(header);
+					col.appendChild(addBtn);			
+				} else {
+					col.innerHTML = "";
+					col.appendChild(header);
+				}
+			}
+			
+			// update trigger
+			var Ntrigers = __ZN3OSG25PolyVR_getNScriptTriggersEPKc(sNamePtr);
+			for (var i=0; i<Ntrigers; i++) {
+				var tData = Module.UTF8ToString(__ZN3OSG26PolyVR_getScriptIthTriggerEPKci(sNamePtr, i));
+				var params = tData.split('|');
+				if (params.length != 5) continue;
+				addParam(0, cols[0], params[0], 'combo');
+				addParam(1, cols[1], params[1], 'value');
+				addParam(2, cols[2], params[2], 'combo');
+				addParam(3, cols[3], params[3], 'value');
+				addParam(4, cols[4], params[4], 'combo');
+			}
+
+			// clear arguments
+			arguments = document.getElementById('arguments');
+			cols = arguments.children;
+			for (var i=0; i<cols.length; i++) {
+				var col = cols[i];
+				var header = col.children[0];
+				
+				if (i == 0) {
+					var addBtn = col.children[col.children.length-1];
+					col.innerHTML = "";	
+					col.appendChild(header);
+					col.appendChild(addBtn);			
+				} else {
+					col.innerHTML = "";
+					col.appendChild(header);
+				}
+			}
+			
+			// update arguments
+			var Nargs = __ZN3OSG26PolyVR_getNScriptArgumentsEPKc(sNamePtr);
+			for (var i=0; i<Ntrigers; i++) {
+				var aData = Module.UTF8ToString(__ZN3OSG27PolyVR_getScriptIthArgumentEPKci(sNamePtr, i));
+				var params = aData.split('|');
+				if (params.length != 2) continue;
+				addParam(0, cols[0], params[0], 'value');
+				addParam(1, cols[1], params[1], 'value');
+			}
+
+			//console.log("N a t" + Ntrigers +' '+ Nargs);
+
+			_free(sNamePtr);
 		}
 
 		function updateScriptsList() {
@@ -138,16 +274,16 @@
 		}
 
 		function newScript() {
+
 		}
 
 		function saveScript() {
 			var editor = document.getElementById('editor');
-			var sName = selectedScriptButton.innerHTML;
-			var sCore = editor.innerHTML;
+			var sName = selectedScriptButton.textContent;
+			var sCore = editor.textContent;
 			var n = sCore.search("\n");
-			if (n != -1) {
-				sCore = sCore.substring(n);
-			}
+			if (n != -1) sCore = sCore.substring(n);
+			console.log(sCore);
 			sNamePtr = allocate(intArrayFromString(sName), 0);
 			corePtr = allocate(intArrayFromString(sCore), 0);
 			__ZN3OSG20PolyVR_setScriptCoreEPKcS1_(sNamePtr, corePtr);
@@ -157,10 +293,90 @@
 
 		function executeScript() {
 			saveScript();
-			var sName = selectedScriptButton.innerHTML;
+			var sName = selectedScriptButton.textContent;
 			sNamePtr = allocate(intArrayFromString(sName), 0);
 			__ZN3OSG20PolyVR_triggerScriptEPKcPS1_i(sNamePtr, [], 0);
 			_free(sNamePtr);
+		}
+
+		function setScriptType(sType) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sTypePtr = allocate(intArrayFromString(sType), 0);
+			__ZN3OSG20PolyVR_setScriptTypeEPKcS1_(sNamePtr, sTypePtr);
+			_free(sNamePtr);
+			_free(sTypePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function addOption(cbox, opt) {
+			o = document.createElement('option');
+			o.innerHTML = opt;
+			o.value = opt;
+			cbox.appendChild(o);
+		}
+
+		function addTriggerOptions(cbox) {
+			addOption(cbox, 'none');
+			addOption(cbox, 'on_scene_load');
+			addOption(cbox, 'on_scene_close');
+			addOption(cbox, 'on_scene_import');
+			addOption(cbox, 'on_timeout');
+			addOption(cbox, 'on_device');
+			addOption(cbox, 'on_socket');
+		}
+
+		function addDeviceOptions(cbox) {
+			addOption(cbox, 'none');
+			addOption(cbox, 'mouse');
+			addOption(cbox, 'keyboard');
+		}
+
+		function addStateOptions(cbox) {
+			addOption(cbox, 'none');
+			addOption(cbox, 'Pressed');
+			addOption(cbox, 'Released');
+			addOption(cbox, 'Drag');
+			addOption(cbox, 'Drop');
+			addOption(cbox, 'To Edge');
+			addOption(cbox, 'From Edge');
+		}
+
+		function addParam(i, col, param, type) {
+			var rows = col.children;
+			var val = undefined;
+			if (type == 'value') {
+				val = document.createElement('div');
+				val.innerHTML = param;
+				val.contentEditable = true;
+			}
+			if (type == 'combo') {
+				val = document.createElement('select');
+				if (i == 0) addTriggerOptions(val);
+				if (i == 2) addDeviceOptions(val);
+				if (i == 4) addStateOptions(val);
+				val.value = param;
+			}
+			val.className = 'paramEntry';
+			if (i == 0) col.insertBefore(val, rows[rows.length-1]);
+			else col.appendChild(val);
+		}
+
+		function addTrigger() {
+			triggers = document.getElementById('trigger');
+			cols = triggers.children;
+			addParam(0, cols[0], 'on_script_load', 'combo');
+			addParam(1, cols[1], '...', 'value');
+			addParam(2, cols[2], '...', 'combo');
+			addParam(3, cols[3], '...', 'value');
+			addParam(4, cols[4], '...', 'combo');
+		}
+
+		function addArgument() {
+			arguments = document.getElementById('arguments');
+			cols = arguments.children;
+			addParam(0, cols[0], 'var', 'value');
+			addParam(1, cols[1], '0', 'value');
 		}
 	</script>
 </head>
@@ -171,7 +387,40 @@
 		<button class="toolButton disabledButton" onclick='saveScript()'>S</button>
 		<button class="toolButton disabledButton" onclick='executeScript()'>E</button>
 	</div>
-	<div id="parameters"></div>
+	<div id="parameters">
+		<div id="options">
+			<button onclick='setScriptType("Python");'>Python</button>
+			<button onclick='setScriptType("GLSL");'>GLSL</button>
+			<button onclick='setScriptType("HTML");'>HTML</button>
+		</div>
+		<div id="trigger">
+			<div class="column">
+				<div class="header">Trigger</div>
+				<button class="newEntry" onclick='addTrigger();'>add</button>
+			</div>
+			<div class="column">
+				<div class="header">Parameter</div>
+			</div>
+			<div class="column">
+				<div class="header">Device</div>
+			</div>
+			<div class="column">
+				<div class="header">Key</div>
+			</div>
+			<div class="column">
+				<div class="header">State</div>
+			</div>
+		</div>
+		<div id="arguments">
+			<div class="column">
+				<div class="header">Argument</div>
+				<button class="newEntry" onclick='addArgument();'>add</button>
+			</div>
+			<div class="column">
+				<div class="header">Value</div>
+			</div>
+		</div>
+	</div>
 	<div id="scripts"></div>
 	<div id="editor" contenteditable="true"></div>
 
