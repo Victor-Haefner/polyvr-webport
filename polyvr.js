@@ -1671,7 +1671,7 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10488096: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.send(); const byteCount = (Module.lengthBytesUTF8(request.responseText) + 1); const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); Module.stringToUTF8(request.responseText, responsePtr+16, byteCount); return responsePtr;}
+  10489872: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.send(); const byteCount = (Module.lengthBytesUTF8(request.responseText) + 1); const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); Module.stringToUTF8(request.responseText, responsePtr+16, byteCount); return responsePtr;}
 };
 
 
@@ -11505,6 +11505,57 @@ var __ZN3OSG20PolyVR_getScriptCoreEPKc = Module["__ZN3OSG20PolyVR_getScriptCoreE
 
 /** @type {function(...*):?} */
 var __ZN3OSG20PolyVR_setScriptCoreEPKcS1_ = Module["__ZN3OSG20PolyVR_setScriptCoreEPKcS1_"] = createExportWrapper("_ZN3OSG20PolyVR_setScriptCoreEPKcS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG20PolyVR_getScriptTypeEPKc = Module["__ZN3OSG20PolyVR_getScriptTypeEPKc"] = createExportWrapper("_ZN3OSG20PolyVR_getScriptTypeEPKc");
+
+/** @type {function(...*):?} */
+var __ZN3OSG20PolyVR_setScriptTypeEPKcS1_ = Module["__ZN3OSG20PolyVR_setScriptTypeEPKcS1_"] = createExportWrapper("_ZN3OSG20PolyVR_setScriptTypeEPKcS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG25PolyVR_getNScriptTriggersEPKc = Module["__ZN3OSG25PolyVR_getNScriptTriggersEPKc"] = createExportWrapper("_ZN3OSG25PolyVR_getNScriptTriggersEPKc");
+
+/** @type {function(...*):?} */
+var __ZN3OSG26PolyVR_getScriptIthTriggerEPKci = Module["__ZN3OSG26PolyVR_getScriptIthTriggerEPKci"] = createExportWrapper("_ZN3OSG26PolyVR_getScriptIthTriggerEPKci");
+
+/** @type {function(...*):?} */
+var __ZN3OSG26PolyVR_getNScriptArgumentsEPKc = Module["__ZN3OSG26PolyVR_getNScriptArgumentsEPKc"] = createExportWrapper("_ZN3OSG26PolyVR_getNScriptArgumentsEPKc");
+
+/** @type {function(...*):?} */
+var __ZN3OSG27PolyVR_getScriptIthArgumentEPKci = Module["__ZN3OSG27PolyVR_getScriptIthArgumentEPKci"] = createExportWrapper("_ZN3OSG27PolyVR_getScriptIthArgumentEPKci");
+
+/** @type {function(...*):?} */
+var __ZN3OSG24PolyVR_addScriptArgumentEPKc = Module["__ZN3OSG24PolyVR_addScriptArgumentEPKc"] = createExportWrapper("_ZN3OSG24PolyVR_addScriptArgumentEPKc");
+
+/** @type {function(...*):?} */
+var __ZN3OSG23PolyVR_addScriptTriggerEPKc = Module["__ZN3OSG23PolyVR_addScriptTriggerEPKc"] = createExportWrapper("_ZN3OSG23PolyVR_addScriptTriggerEPKc");
+
+/** @type {function(...*):?} */
+var __ZN3OSG27PolyVR_remScriptIthArgumentEPKci = Module["__ZN3OSG27PolyVR_remScriptIthArgumentEPKci"] = createExportWrapper("_ZN3OSG27PolyVR_remScriptIthArgumentEPKci");
+
+/** @type {function(...*):?} */
+var __ZN3OSG26PolyVR_remScriptIthTriggerEPKci = Module["__ZN3OSG26PolyVR_remScriptIthTriggerEPKci"] = createExportWrapper("_ZN3OSG26PolyVR_remScriptIthTriggerEPKci");
+
+/** @type {function(...*):?} */
+var __ZN3OSG30PolyVR_setScriptIthTriggerTypeEPKciS1_ = Module["__ZN3OSG30PolyVR_setScriptIthTriggerTypeEPKciS1_"] = createExportWrapper("_ZN3OSG30PolyVR_setScriptIthTriggerTypeEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG31PolyVR_setScriptIthTriggerParamEPKciS1_ = Module["__ZN3OSG31PolyVR_setScriptIthTriggerParamEPKciS1_"] = createExportWrapper("_ZN3OSG31PolyVR_setScriptIthTriggerParamEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG32PolyVR_setScriptIthTriggerDeviceEPKciS1_ = Module["__ZN3OSG32PolyVR_setScriptIthTriggerDeviceEPKciS1_"] = createExportWrapper("_ZN3OSG32PolyVR_setScriptIthTriggerDeviceEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG29PolyVR_setScriptIthTriggerKeyEPKcii = Module["__ZN3OSG29PolyVR_setScriptIthTriggerKeyEPKcii"] = createExportWrapper("_ZN3OSG29PolyVR_setScriptIthTriggerKeyEPKcii");
+
+/** @type {function(...*):?} */
+var __ZN3OSG31PolyVR_setScriptIthTriggerStateEPKciS1_ = Module["__ZN3OSG31PolyVR_setScriptIthTriggerStateEPKciS1_"] = createExportWrapper("_ZN3OSG31PolyVR_setScriptIthTriggerStateEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG30PolyVR_setScriptIthArgumentVarEPKciS1_ = Module["__ZN3OSG30PolyVR_setScriptIthArgumentVarEPKciS1_"] = createExportWrapper("_ZN3OSG30PolyVR_setScriptIthArgumentVarEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_ = Module["__ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_"] = createExportWrapper("_ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_");
 
 /** @type {function(...*):?} */
 var _memset = Module["_memset"] = createExportWrapper("memset");

@@ -54,16 +54,6 @@
 			background-color: #cccccc;
 		}
 
-		#parameters {
-			display: flex;
-			position: fixed;
-			left: 10vw;
-			top: 5vh;	
-			width: 40vw;
-			height: 15vh;
-			background-color: #dddddd;
-		}
-
 		#editor {
 			display: block;
 			position: fixed;
@@ -72,6 +62,16 @@
 			width: 40vw;
 			height: 80vh;
 			white-space: pre;
+		}
+
+		#parameters {
+			display: flex;
+			position: fixed;
+			left: 10vw;
+			top: 5vh;	
+			width: 40vw;
+			height: 15vh;
+			background-color: #dddddd;
 		}
 
 		#options {
@@ -83,24 +83,24 @@
 			height: 100%;
 		}
 
+		#trigs_args {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			left: 15%;
+			width: 85%;
+			height: 100%;
+			overflow-y: scroll;
+		}
+
 		#trigger {
 			display: flex;
 			flex-direction: row;
-			position: absolute;
-			width: 55%;
-			height: 100%;
-			left: 15%;
-			top: 0%;
 		}
 
 		#arguments {
 			display: flex;
 			flex-direction: row;
-			position: absolute;
-			width: 30%;
-			height: 100%;
-			left: 70%;
-			top: 0%;
 			background-color: #ccc;
 		}
 
@@ -218,6 +218,7 @@
 				addParam(2, cols[2], params[2], 'combo');
 				addParam(3, cols[3], params[3], 'value');
 				addParam(4, cols[4], params[4], 'combo');
+				addParam(5, cols[5], 'X', 'xbox');
 			}
 
 			// clear arguments
@@ -240,12 +241,13 @@
 			
 			// update arguments
 			var Nargs = __ZN3OSG26PolyVR_getNScriptArgumentsEPKc(sNamePtr);
-			for (var i=0; i<Ntrigers; i++) {
+			for (var i=0; i<Nargs; i++) {
 				var aData = Module.UTF8ToString(__ZN3OSG27PolyVR_getScriptIthArgumentEPKci(sNamePtr, i));
 				var params = aData.split('|');
 				if (params.length != 2) continue;
 				addParam(0, cols[0], params[0], 'value');
 				addParam(1, cols[1], params[1], 'value');
+				addParam(2, cols[2], 'X', 'xbox');
 			}
 
 			//console.log("N a t" + Ntrigers +' '+ Nargs);
@@ -342,6 +344,24 @@
 			addOption(cbox, 'From Edge');
 		}
 
+		function getIthSibling(e) {
+			var p = e.parentElement;
+			var i = -1;
+			for (var j=1; j<p.children.length; j++) if (p.children[j] == e) i = j;
+			return i;
+		}
+
+		function removeRow() {
+			var i = getIthSibling(this) - 1; // -1 because of header row
+			var d = this.parentElement.parentElement.id;
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			if (d == 'trigger') __ZN3OSG26PolyVR_remScriptIthTriggerEPKci(sNamePtr, i);
+			if (d == 'arguments') __ZN3OSG27PolyVR_remScriptIthArgumentEPKci(sNamePtr, i);
+			_free(sNamePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
 		function addParam(i, col, param, type) {
 			var rows = col.children;
 			var val = undefined;
@@ -349,6 +369,7 @@
 				val = document.createElement('div');
 				val.innerHTML = param;
 				val.contentEditable = true;
+				val.oninput = changeParam;
 			}
 			if (type == 'combo') {
 				val = document.createElement('select');
@@ -356,6 +377,12 @@
 				if (i == 2) addDeviceOptions(val);
 				if (i == 4) addStateOptions(val);
 				val.value = param;
+				val.onchange = changeCombo;
+			}
+			if (type == 'xbox') {
+				val = document.createElement('button');
+				val.innerHTML = param;
+				val.onclick = removeRow;
 			}
 			val.className = 'paramEntry';
 			if (i == 0) col.insertBefore(val, rows[rows.length-1]);
@@ -363,20 +390,106 @@
 		}
 
 		function addTrigger() {
-			triggers = document.getElementById('trigger');
-			cols = triggers.children;
-			addParam(0, cols[0], 'on_script_load', 'combo');
-			addParam(1, cols[1], '...', 'value');
-			addParam(2, cols[2], '...', 'combo');
-			addParam(3, cols[3], '...', 'value');
-			addParam(4, cols[4], '...', 'combo');
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			__ZN3OSG23PolyVR_addScriptTriggerEPKc(sNamePtr);
+			_free(sNamePtr);
+			selectScript(selectedScriptButton, sName);
 		}
 
 		function addArgument() {
-			arguments = document.getElementById('arguments');
-			cols = arguments.children;
-			addParam(0, cols[0], 'var', 'value');
-			addParam(1, cols[1], '0', 'value');
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			__ZN3OSG24PolyVR_addScriptArgumentEPKc(sNamePtr);
+			_free(sNamePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setTriggerType(i, type) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sTypePtr = allocate(intArrayFromString(type), 0);
+			__ZN3OSG30PolyVR_setScriptIthTriggerTypeEPKciS1_(sNamePtr, i, sTypePtr);
+			_free(sNamePtr);
+			_free(sTypePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setTriggerParam(i, param) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sParamPtr = allocate(intArrayFromString(param), 0);
+			__ZN3OSG31PolyVR_setScriptIthTriggerParamEPKciS1_(sNamePtr, i, sParamPtr);
+			_free(sNamePtr);
+			_free(sParamPtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setTriggerDevice(i, dev) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sDevPtr = allocate(intArrayFromString(dev), 0);
+			__ZN3OSG32PolyVR_setScriptIthTriggerDeviceEPKciS1_(sNamePtr, i, sDevPtr);
+			_free(sNamePtr);
+			_free(sDevPtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setTriggerKey(i, key) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			__ZN3OSG29PolyVR_setScriptIthTriggerKeyEPKcii(sNamePtr, i, key);
+			_free(sNamePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setTriggerState(i, state) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sStatePtr = allocate(intArrayFromString(state), 0);
+			__ZN3OSG31PolyVR_setScriptIthTriggerStateEPKciS1_(sNamePtr, i, sStatePtr);
+			_free(sNamePtr);
+			_free(sStatePtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setArgumentVar(i, vari) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sVariPtr = allocate(intArrayFromString(vari), 0);
+			__ZN3OSG30PolyVR_setScriptIthArgumentVarEPKciS1_(sNamePtr, i, sVariPtr);
+			_free(sNamePtr);
+			_free(sVariPtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function setArgumentVal(i, val) {
+			var sName = selectedScriptButton.textContent;
+			sNamePtr = allocate(intArrayFromString(sName), 0);
+			sValPtr = allocate(intArrayFromString(val), 0);
+			__ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_(sNamePtr, i, sValPtr);
+			_free(sNamePtr);
+			_free(sValPtr);
+			selectScript(selectedScriptButton, sName);
+		}
+
+		function changeCombo() {
+			var i = getIthSibling(this) - 1; // -1 because of header row
+			var v = this.value;
+			var h = this.parentElement.children[0].textContent;
+			if (h == 'Trigger') setTriggerType(i, v);
+			if (h == 'Device') setTriggerDevice(i, v);
+			if (h == 'State') setTriggerState(i, v);
+		}
+
+		function changeParam() {
+			var i = getIthSibling(this) - 1; // -1 because of header row
+			var v = this.textContent;
+			var h = this.parentElement.children[0].textContent;
+			if (h == 'Parameter') setTriggerParam(i, v);
+			if (h == 'Key') setTriggerKey(i, parseInt(v));
+			if (h == 'Argument') setArgumentVar(i, v);
+			if (h == 'Value') setArgumentVal(i, v);
 		}
 	</script>
 </head>
@@ -393,31 +506,39 @@
 			<button onclick='setScriptType("GLSL");'>GLSL</button>
 			<button onclick='setScriptType("HTML");'>HTML</button>
 		</div>
-		<div id="trigger">
-			<div class="column">
-				<div class="header">Trigger</div>
-				<button class="newEntry" onclick='addTrigger();'>add</button>
+		<div id="trigs_args">
+			<div id="trigger">
+				<div class="column">
+					<div class="header">Trigger</div>
+					<button class="newEntry" onclick='addTrigger();'>add</button>
+				</div>
+				<div class="column">
+					<div class="header">Parameter</div>
+				</div>
+				<div class="column">
+					<div class="header">Device</div>
+				</div>
+				<div class="column">
+					<div class="header">Key</div>
+				</div>
+				<div class="column">
+					<div class="header">State</div>
+				</div>
+				<div class="column">
+					<div class="header">X</div>
+				</div>
 			</div>
-			<div class="column">
-				<div class="header">Parameter</div>
-			</div>
-			<div class="column">
-				<div class="header">Device</div>
-			</div>
-			<div class="column">
-				<div class="header">Key</div>
-			</div>
-			<div class="column">
-				<div class="header">State</div>
-			</div>
-		</div>
-		<div id="arguments">
-			<div class="column">
-				<div class="header">Argument</div>
-				<button class="newEntry" onclick='addArgument();'>add</button>
-			</div>
-			<div class="column">
-				<div class="header">Value</div>
+			<div id="arguments">
+				<div class="column">
+					<div class="header">Argument</div>
+					<button class="newEntry" onclick='addArgument();'>add</button>
+				</div>
+				<div class="column">
+					<div class="header">Value</div>
+				</div>
+				<div class="column">
+					<div class="header">X</div>
+				</div>
 			</div>
 		</div>
 	</div>
