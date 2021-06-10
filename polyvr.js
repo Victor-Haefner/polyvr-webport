@@ -1671,7 +1671,7 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10489872: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.send(); const byteCount = (Module.lengthBytesUTF8(request.responseText) + 1); const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); Module.stringToUTF8(request.responseText, responsePtr+16, byteCount); return responsePtr;}
+  10488176: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.send(); const byteCount = (Module.lengthBytesUTF8(request.responseText) + 1); const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); Module.stringToUTF8(request.responseText, responsePtr+16, byteCount); return responsePtr;}
 };
 
 
@@ -9047,12 +9047,6 @@ var ASM_CONSTS = {
         );
     }
 
-  function _glGetError() {
-      var error = GLctx.getError() || GL.lastError;
-      GL.lastError = 0/*GL_NO_ERROR*/;
-      return error;
-    }
-
   function _glGetFloatv(name_, p) {
       emscriptenWebGLGet(name_, p, 2);
     }
@@ -11370,7 +11364,6 @@ var asmLibraryArg = {
   "glFinish": _glFinish,
   "glFrontFace": _glFrontFace,
   "glGenTextures": _glGenTextures,
-  "glGetError": _glGetError,
   "glGetFloatv": _glGetFloatv,
   "glGetIntegerv": _glGetIntegerv,
   "glGetShaderInfoLog": _glGetShaderInfoLog,
