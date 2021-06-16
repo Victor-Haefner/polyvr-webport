@@ -55,14 +55,33 @@
 		}
 
 		#editor {
-			display: block;
+			display: flex;
+			flex-direction: row;
 			position: fixed;
 			left: 10vw;
 			top: 20vh;	
 			width: 40vw;
 			height: 80vh;
+			overflow-y: scroll;
+		}
+
+		#editor_lines {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			width: 20px;
+			height: 200em;
+			background-color: #ddd;
+			font: 400 13.3333px Arial;
+			padding-top: 3px;
+		}
+
+		#editor_area {
+			width: calc(100% - 20px);
 			white-space: pre;
-			overflow: scroll;
+			overflow-y: auto;
+			resize: none;
+			height: 200em;
 		}
 
 		#parameters {
@@ -160,15 +179,47 @@
 		var selectedScriptButton = undefined;
 		var selectedScriptType = undefined;
 
+		function setupEditor() {
+			var editor_lines = document.getElementById('editor_lines');
+			editor_lines.innerHTML = "";
+			for (var i =0; i<100; i++) {
+				var n = document.createElement('div');
+				n.innerHTML = i;
+				editor_lines.appendChild(n);	
+			}
+
+			document.getElementById('editor_area').addEventListener('keydown', function(e) {
+				if (e.key == 'Tab') {
+					e.preventDefault();
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+					this.selectionStart = this.selectionEnd = start + 1;
+				}
+			});
+
+			document.addEventListener('keydown', function(e) {
+				if (e.ctrlKey && (e.which == 83)) {
+					e.preventDefault();
+					saveScript();
+				}
+
+				if (e.ctrlKey && (e.which == 69)) {
+					e.preventDefault();
+					executeScript();
+				}
+			});
+		}
+
 		function selectScript(button, sName) {
-			// set editor content
-			var editor = document.getElementById('editor');
-			editor.innerHTML = "";
+			// set editor_area content
+			var editor_area = document.getElementById('editor_area');
+			editor_area.value = "";
 
 			sNamePtr = allocate(intArrayFromString(sName), 0);
 			var sData = __ZN3OSG20PolyVR_getScriptCoreEPKc(sNamePtr);
 			var core = Module.UTF8ToString(sData);
-			editor.innerHTML = core;
+			editor_area.value = core;
 
 			button.className = 'script selectedScript';
 			if (selectedScriptButton != undefined) selectedScriptButton.className = 'script';
@@ -281,12 +332,11 @@
 		}
 
 		function saveScript() {
-			var editor = document.getElementById('editor');
+			var editor_area = document.getElementById('editor_area');
 			var sName = selectedScriptButton.textContent;
-			var sCore = editor.textContent;
+			var sCore = editor_area.value;
 			var n = sCore.search("\n");
 			if (n != -1) sCore = sCore.substring(n);
-			console.log(sCore);
 			sNamePtr = allocate(intArrayFromString(sName), 0);
 			corePtr = allocate(intArrayFromString(sCore), 0);
 			__ZN3OSG20PolyVR_setScriptCoreEPKcS1_(sNamePtr, corePtr);
@@ -544,7 +594,10 @@
 		</div>
 	</div>
 	<div id="scripts"></div>
-	<div id="editor" contenteditable="true"></div>
+	<div id="editor">
+		<div id="editor_lines"></div>
+		<textarea id="editor_area"></textarea>
+	</div>
 
 	<!-- Create the canvas that the C++ code will draw into -->
 	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
@@ -554,6 +607,8 @@
 	<!-- Allow the C++ to access the canvas element --> 
 	<div id="progressBar"></div>
 	<script type='text/javascript'>
+		setupEditor();
+
 		var canv = document.getElementById('canvas');
 		var Module = {
 		    canvas: canv,
