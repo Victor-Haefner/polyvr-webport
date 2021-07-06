@@ -209,6 +209,10 @@
 					executeScript();
 				}
 			});
+
+			window.onbeforeunload = function() {
+			    return "PolyVR scene is not stored.";
+			}
 		}
 
 		function selectScript(button, sName) {
