@@ -1671,7 +1671,7 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10488176: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.send(); const byteCount = (Module.lengthBytesUTF8(request.responseText) + 1); const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); Module.stringToUTF8(request.responseText, responsePtr+16, byteCount); return responsePtr;}
+  10690940: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;}
 };
 
 
@@ -6792,10 +6792,6 @@ var ASM_CONSTS = {
     }
 
 
-  function _dladdr(address, info) {
-      abort("To use dlopen, you need to use Emscripten's linking support, see https://github.com/emscripten-core/emscripten/wiki/Linking");
-    }
-
   function _dlclose(handle) {
       abort("To use dlopen, you need to use Emscripten's linking support, see https://github.com/emscripten-core/emscripten/wiki/Linking");
     }
@@ -11150,7 +11146,6 @@ var asmLibraryArg = {
   "chroot": _chroot,
   "clock": _clock,
   "clock_gettime": _clock_gettime,
-  "dladdr": _dladdr,
   "dlclose": _dlclose,
   "dlerror": _dlerror,
   "dlopen": _dlopen,
