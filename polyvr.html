@@ -13,6 +13,9 @@
 
 		#progressBar {
 			display: none;
+			position: absolute;
+			top:0;
+			left:0;
 			width: 0%;
 			height: 30px;
 			background-color: #4CAF50;
@@ -20,6 +23,7 @@
 			line-height: 30px; /* To center it vertically */
 			color: white;
 			margin: 0px;
+			z-index: 1;
 		}
 
 		#canvas {
@@ -45,6 +49,12 @@
 		    arguments: [],
 		    preRun: []
 		};
+
+		function handleFromPolyVR(msg) {
+			console.log("handleFromPolyVR: "+msg);
+			var params = msg.split('|');
+			if (params[0] == 'setProgress') setProgress( parseFloat(params[1]) );
+		}
 
 		function checkResize(time) {
 		  var displayWidth  = canv.clientWidth;
@@ -117,6 +127,7 @@
 			preloadFile('Browser.xml');
 			preloadFile('PROJECT.pvr');
 			preloadFile('Mono.ttf');
+			preloadFile('proj.db');
 			//INCLUDE_PRELOAD_HOOK
 		};
 
