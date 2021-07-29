@@ -343,8 +343,10 @@
 			var editor_area = document.getElementById('editor_area');
 			var sName = selectedScriptButton.textContent;
 			var sCore = editor_area.value;
-			var n = sCore.search("\n");
-			if (n != -1) sCore = sCore.substring(n);
+			if (selectedScriptType == 'Python') {
+				var n = sCore.search("\n");
+				if (n != -1) sCore = sCore.substring(n+1);
+			}
 			sNamePtr = allocate(intArrayFromString(sName), 0);
 			corePtr = allocate(intArrayFromString(sCore), 0);
 			__ZN3OSG20PolyVR_setScriptCoreEPKcS1_(sNamePtr, corePtr);
