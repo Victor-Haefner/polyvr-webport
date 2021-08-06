@@ -741,6 +741,15 @@
 			preloadFile('PROJECT.pvr');
 			setTimeout( function() { __ZN3OSG18PolyVR_reloadSceneEv(); }, 2000 );
 		}
+
+		var clients = [];
+
+		window.addEventListener("message", (event) => {
+			if (clients.indexOf(event.source) == -1) clients.append(event.source);
+			var cID = clients.indexOf(event.source);
+			var sMsgPtr = allocate(intArrayFromString(event.data), 0);
+			__ZN3OSG27PolyVR_triggerServerMessageEPKci(sMsgPtr,cID);
+		}, false);
 	</script>
 </body>
 
