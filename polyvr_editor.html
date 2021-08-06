@@ -752,7 +752,6 @@
 		}, false);
 
 		function sendToClient(cID, msg) {
-			console.log('sendToClient '+cID.toString()+': '+msg);
 			clients[cID].postMessage(msg, window.origin);
 		}
 	</script>
