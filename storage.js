@@ -31,7 +31,8 @@ function setupDB() {
 		window.webkitRequestFileSystem(window.PERSISTENT, storage.size, onInit, onErr);
 	};
 
-	navigator.webkitPersistentStorage.requestQuota(storage.size, onAllowed);
+	if (navigator.webkitPersistentStorage == undefined) storage.onInit();
+	else navigator.webkitPersistentStorage.requestQuota(storage.size, onAllowed);
 }
 
 function storeRessource() {
@@ -50,7 +51,8 @@ function storeRessource() {
 		fileEntry.createWriter( onWriterReady, onErr);
 	};
 
-	storage.database.root.getFile(storage.path, {create: true}, onEntryReady, onErr);
+	if (storage.database !== undefined)
+		storage.database.root.getFile(storage.path, {create: true}, onEntryReady, onErr);
 }
 
 function setupRequest() {
