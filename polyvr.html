@@ -9,6 +9,7 @@
 	<style>
 		body {
 			margin: 0px;
+			overflow: hidden;
 		}
 
 		#progressBar {
@@ -19,7 +20,7 @@
 			width: 0%;
 			height: 30px;
 			background-color: #4CAF50;
-			text-align: center; /* To center it horizontally (if you want) */
+			text-align: left; /* To center it horizontally (if you want) */
 			line-height: 30px; /* To center it vertically */
 			color: white;
 			margin: 0px;
@@ -53,7 +54,7 @@
 		function handleFromPolyVR(msg) {
 			console.log("handleFromPolyVR: "+msg);
 			var params = msg.split('|');
-			if (params[0] == 'setProgress') setProgress( parseFloat(params[1]) );
+			if (params[0] == 'setProgress') setProgress( parseFloat(params[1]), params[2] );
 		}
 
 		function checkResize(time) {

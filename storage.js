@@ -9,12 +9,12 @@ var storage = {
 	size      : 300*1024*1024 // 300 mb
 };
 
-function setProgress(f) { // from 0 to 1
+function setProgress(f,lbl="") { // from 0 to 1
 	var i = Math.round(f*100);
 	var p = i + "%";
 	var elem = document.getElementById("progressBar");
 	elem.style.width = p;
-	elem.innerHTML = p;
+	elem.innerHTML = lbl + ' ' + p;
 	elem.style.display = 'block';
 	if (i == 100) elem.style.display = 'none';
 }
@@ -69,7 +69,7 @@ function setupRequest() {
 	};
 
 	storage.request.onprogress = function(e) {
-		setProgress(e.loaded/e.total);
+		setProgress(e.loaded/e.total, 'download engine');
 	};
 };
 
