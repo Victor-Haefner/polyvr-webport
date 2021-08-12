@@ -1358,6 +1358,8 @@ assert(Math.trunc, 'This browser does not support Math.trunc(), build with LEGAC
 // it happens right before run - run will be postponed until
 // the dependencies are met.
 var runDependencies = 0;
+var addedRunDependencies = 0;
+var doneRunDependencies = 0;
 var runDependencyWatcher = null;
 var dependenciesFulfilled = null; // overridden to take different actions when all run dependencies are fulfilled
 var runDependencyTracking = {};
@@ -1372,6 +1374,8 @@ function getUniqueRunDependency(id) {
 
 function addRunDependency(id) {
   runDependencies++;
+addedRunDependencies++;
+setProgress(doneRunDependencies/addedRunDependencies, "download asset");
 
   if (Module['monitorRunDependencies']) {
     Module['monitorRunDependencies'](runDependencies);
@@ -1408,6 +1412,8 @@ function addRunDependency(id) {
 
 function removeRunDependency(id) {
   runDependencies--;
+doneRunDependencies++;
+setProgress(doneRunDependencies/addedRunDependencies, "download asset");
 
   if (Module['monitorRunDependencies']) {
     Module['monitorRunDependencies'](runDependencies);
@@ -1671,8 +1677,12 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10759196: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
- 10759949: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }}
+  10769708: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
+ 10770461: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }},  
+ 10770571: function($0, $1) {var msg = Module.UTF8ToString($0); var cID = $1; sendToClient(cID, msg);},  
+ 10770648: function($0, $1, $2) {var fID = $0; var isVis = $1; var uri = Module.UTF8ToString($2); var parts = uri.split("/"); uri = parts[parts.length - 1]; var frame = document.createElement("iframe"); document.body.appendChild(frame); frame.src = uri+".html"; frame.style = "position:absolute;top:0;left:0;height:300px;width:300px;z-index:2;"; frame.frameBorder = 0; frame.title = "PolyVR widget"; if (!isVis) frame.style.display = "none"; hudFrames[fID] = frame;},  
+ 10771085: function($0, $1, $2, $3, $4) {var fID = $0; var width = $1 * 100.0; var height = $2 * 100.0; var left = $3 * 100.0; var bottom = $4 * 100.0; var frame = hudFrames[fID]; if (frame != undefined) { frame.style.width = width+"vh"; frame.style.height = height+"vh"; frame.style.left = "calc("+left+"vw - "+(width*0.5)+"vh)"; frame.style.top = ((100-bottom)-height*0.5)+"vh"; }},  
+ 10771431: function($0, $1) {var fID = $0; var b = $1; var frame = hudFrames[fID]; if (frame != undefined) { if (b) frame.style.display = "block"; else frame.style.display = "none"; }}
 };
 
 
@@ -10768,10 +10778,10 @@ var ASM_CONSTS = {
         var newY = Browser.mouseY;
         if (newX == lastX && newY == lastY) return;
   
-        if (GLUT.buttons == 0 && event.target == Module["canvas"] && GLUT.passiveMotionFunc) {
+        if (GLUT.buttons == 0 && event.target == Module["canvas"] && GLUT.motionFunc) {
           event.preventDefault();
           GLUT.saveModifiers(event);
-          wasmTable.get(GLUT.passiveMotionFunc)(lastX, lastY);
+          wasmTable.get(GLUT.motionFunc)(lastX, lastY);
         } else if (GLUT.buttons != 0 && GLUT.motionFunc) {
           event.preventDefault();
           GLUT.saveModifiers(event);
@@ -12397,6 +12407,9 @@ var __ZN3OSG30PolyVR_setScriptIthArgumentVarEPKciS1_ = Module["__ZN3OSG30PolyVR_
 
 /** @type {function(...*):?} */
 var __ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_ = Module["__ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_"] = createExportWrapper("_ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_");
+
+/** @type {function(...*):?} */
+var __ZN3OSG27PolyVR_triggerServerMessageEPKci = Module["__ZN3OSG27PolyVR_triggerServerMessageEPKci"] = createExportWrapper("_ZN3OSG27PolyVR_triggerServerMessageEPKci");
 
 /** @type {function(...*):?} */
 var _memset = Module["_memset"] = createExportWrapper("memset");
