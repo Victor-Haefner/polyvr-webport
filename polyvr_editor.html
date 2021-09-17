@@ -178,6 +178,44 @@
 			width: 100%;
 			background: none;		
 		}
+		
+		@keyframes blink {
+		    0% {
+		      opacity: 0;
+		    }
+
+		    20% {
+		      opacity: 1;
+		    }
+
+		    100% {
+		      opacity: 0;
+		    }
+		}
+		
+		.idle span {
+		    opacity: 0;
+		}
+
+		.saving span {
+		    display: inline-block;
+		    animation-name: blink;
+		    animation-duration: 0.4s;
+		    animation-iteration-count: 1;
+		    animation-fill-mode: both;
+		    background-color: #26c;
+		    width: 20px;
+		    height: 20px;
+		    border-radius: 10px;
+		}
+
+		.saving span:nth-child(2) {
+		    animation-delay: .05s;
+		}
+
+		.saving span:nth-child(3) {
+		    animation-delay: .1s;
+		}
 	</style>
 
 	<script type='text/javascript'>
@@ -341,6 +379,13 @@
 		}
 
 		function saveScript() {
+			var saveDots = document.getElementById('saveDots');
+			saveDots.className = 'saving';
+			setTimeout(function(){ 
+				var saveDots = document.getElementById('saveDots');
+				saveDots.className = 'idle'; 
+				}, 500);
+		
 			var editor_area = document.getElementById('editor_area');
 			var sName = selectedScriptButton.textContent;
 			var sCore = editor_area.value;
@@ -561,6 +606,9 @@
 		<button class="toolButton" onclick='newScript()'>N</button>
 		<button class="toolButton disabledButton" onclick='saveScript()'>S</button>
 		<button class="toolButton disabledButton" onclick='executeScript()'>E</button>
+		<p id='saveDots' class="idle">
+			<span></span> <span></span> <span></span>
+		</p>
 	</div>
 	<div id="parameters">
 		<div id="options">
