@@ -67,26 +67,25 @@
 			top: 20vh;	
 			width: 40vw;
 			height: 80vh;
-			overflow-y: scroll;
 		}
 
 		#editor_lines {
 			display: flex;
 			flex-direction: column;
 			align-items: flex-end;
-			width: 20px;
-			height: 200em;
+			width: 25px;
+			height: calc(80vh - 6px);
 			background-color: #ddd;
 			font: 400 13.3333px Arial;
-			padding-top: 3px;
+			overflow:hidden;
+			text-align:right;
 		}
 
 		#editor_area {
-			width: calc(100% - 20px);
+			width: calc(100% - 25px);
+			height: calc(80vh - 6px);
 			white-space: pre;
-			overflow-y: auto;
 			resize: none;
-			height: 200em;
 		}
 
 		#parameters {
@@ -221,15 +220,18 @@
 	<script type='text/javascript'>
 		var selectedScriptButton = undefined;
 		var selectedScriptType = undefined;
+		
+		function setEditorLines(N) {
+			var lines = "";
+			for (var i =0; i<N; i++) {
+				lines += i+"\n";	
+			}
+			var editor_lines = document.getElementById('editor_lines');
+			editor_lines.value = lines;
+		}
 
 		function setupEditor() {
-			var editor_lines = document.getElementById('editor_lines');
-			editor_lines.innerHTML = "";
-			for (var i =0; i<100; i++) {
-				var n = document.createElement('div');
-				n.innerHTML = i;
-				editor_lines.appendChild(n);	
-			}
+			setEditorLines(1000);
 
 			document.getElementById('editor_area').addEventListener('keydown', function(e) {
 				if (e.key == 'Tab') {
@@ -598,6 +600,12 @@
 			if (h == 'Argument') setArgumentVar(i, v);
 			if (h == 'Value') setArgumentVal(i, v);
 		}
+		
+		function onScrollEditor() {
+			var lines = document.getElementById("editor_lines");
+			var area  = document.getElementById("editor_area");
+			lines.scrollTop = area.scrollTop;
+		}
 	</script>
 </head>
 
@@ -654,8 +662,8 @@
 	</div>
 	<div id="scripts"></div>
 	<div id="editor">
-		<div id="editor_lines"></div>
-		<textarea id="editor_area"></textarea>
+		<textarea id="editor_lines" readonly="true"></textarea>
+		<textarea id="editor_area" onscroll="onScrollEditor();"></textarea>
 	</div>
 
 	<!-- Create the canvas that the C++ code will draw into -->
