@@ -1,4 +1,10 @@
-
+.glCanvasWithEditor {
+	display: block;
+	position: fixed;
+	left: 50vw;
+	width: 50vw;	
+	height: 100vh;
+}
 
 #toolbar {
 	display: flex;

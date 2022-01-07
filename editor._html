@@ -1,0 +1,56 @@
+
+<div id="toolbar">
+	<button class="toolButton" onclick='newScript()'>N</button>
+	<button class="toolButton disabledButton" onclick='saveScript()'>S</button>
+	<button class="toolButton disabledButton" onclick='executeScript()'>E</button>
+	<p id='saveDots' class="idle">
+		<span></span> <span></span> <span></span>
+	</p>
+</div>
+<div id="parameters">
+	<div id="options">
+		<button onclick='setScriptType("Python");'>Python</button>
+		<button onclick='setScriptType("GLSL");'>GLSL</button>
+		<button onclick='setScriptType("HTML");'>HTML</button>
+	</div>
+	<div id="trigs_args">
+		<div id="trigger">
+			<div class="column">
+				<div class="header">Trigger</div>
+				<button class="newEntry" onclick='addTrigger();'>add</button>
+			</div>
+			<div class="column">
+				<div class="header">Parameter</div>
+			</div>
+			<div class="column">
+				<div class="header">Device</div>
+			</div>
+			<div class="column">
+				<div class="header">Key</div>
+			</div>
+			<div class="column">
+				<div class="header">State</div>
+			</div>
+			<div class="column">
+				<div class="header">X</div>
+			</div>
+		</div>
+		<div id="arguments">
+			<div class="column">
+				<div class="header">Argument</div>
+				<button class="newEntry" onclick='addArgument();'>add</button>
+			</div>
+			<div class="column">
+				<div class="header">Value</div>
+			</div>
+			<div class="column">
+				<div class="header">X</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="scripts"></div>
+<div id="editor">
+	<textarea id="editor_lines" readonly="true"></textarea>
+	<textarea id="editor_area" onscroll="onScrollEditor();"></textarea>
+</div>

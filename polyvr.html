@@ -27,11 +27,11 @@
 			z-index: 1;
 		}
 
-		#canvas {
+		.glCanvas {
 			display: block;
 			position: fixed;
 			left: 0vw;
-			width: 100vw;	
+			width: 100vw;
 			height: 100vh;
 		}
 	</style>
@@ -39,7 +39,7 @@
 
 <body>
 	<!-- Create the canvas that the C++ code will draw into -->
-	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+	<canvas id="canvas" class="glCanvas" oncontextmenu="event.preventDefault()"></canvas>
 
 	<script src="storage.js"></script>
 
@@ -75,11 +75,15 @@
 			ENV.PYTHONHOME = "/python:/python";
 		};
 
-		Module.preRun.push(onPreRun)
+		var onPostRun = function() {
+			console.log("------- onPostRun -------");
+		};
+
+		Module.preRun.push(onPreRun);
+		Module.onRuntimeInitialized = onPostRun;
 
 		var onInit = function() {
 			getRessource('polyvr.wasm', true); // force reload for developing
-
 		};
 
 		function preloadFile(path) {

@@ -2,6 +2,25 @@
 var selectedScriptButton = undefined;
 var selectedScriptType = undefined;
 
+async function downloadEditorHTML() {
+	let response = await fetch("/editor._html");
+	if (response.status != 200) throw new Error("Server Error");
+	let data = await response.text();
+	return data;
+}
+
+async function setupEditorDOM() {
+	try {
+		let data = await downloadEditorHTML();
+		var div = document.createElement('editorBox');
+		div.innerHTML = data.trim();
+		document.body.appendChild(div);
+	}
+	catch(e) {
+		alert(e.message);
+	}
+}
+
 function setEditorLines(N) {
 	var lines = "";
 	for (var i =0; i<N; i++) {
@@ -11,7 +30,10 @@ function setEditorLines(N) {
 	editor_lines.value = lines;
 }
 
-function setupEditor() {
+async function setupEditor() {
+	await setupEditorDOM();
+	document.getElementById('canvas').className = 'glCanvasWithEditor';
+
 	setEditorLines(1000);
 
 	document.getElementById('editor_area').addEventListener('keydown', function(e) {
