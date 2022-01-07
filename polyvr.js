@@ -1677,12 +1677,12 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10769708: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
- 10770461: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }},  
- 10770571: function($0, $1) {var msg = Module.UTF8ToString($0); var cID = $1; sendToClient(cID, msg);},  
- 10770648: function($0, $1, $2) {var fID = $0; var isVis = $1; var uri = Module.UTF8ToString($2); var parts = uri.split("/"); uri = parts[parts.length - 1]; var frame = document.createElement("iframe"); document.body.appendChild(frame); frame.src = uri+".html"; frame.style = "position:absolute;top:0;left:0;height:300px;width:300px;z-index:2;"; frame.frameBorder = 0; frame.title = "PolyVR widget"; if (!isVis) frame.style.display = "none"; hudFrames[fID] = frame;},  
- 10771085: function($0, $1, $2, $3, $4) {var fID = $0; var width = $1 * 100.0; var height = $2 * 100.0; var left = $3 * 100.0; var bottom = $4 * 100.0; var frame = hudFrames[fID]; if (frame != undefined) { frame.style.width = width+"vh"; frame.style.height = height+"vh"; frame.style.left = "calc("+left+"vw - "+(width*0.5)+"vh)"; frame.style.top = ((100-bottom)-height*0.5)+"vh"; }},  
- 10771431: function($0, $1) {var fID = $0; var b = $1; var frame = hudFrames[fID]; if (frame != undefined) { if (b) frame.style.display = "block"; else frame.style.display = "none"; }}
+  10902332: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
+ 10903085: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }},  
+ 10903195: function($0, $1) {var msg = Module.UTF8ToString($0); var cID = $1; sendToClient(cID, msg);},  
+ 10903272: function($0, $1, $2) {var fID = $0; var isVis = $1; var uri = Module.UTF8ToString($2); var parts = uri.split("/"); uri = parts[parts.length - 1]+".html"; var frame = document.createElement("iframe"); document.body.appendChild(frame); frame.src = uri; frame.style = "position:absolute;top:0;right:0;height:300px;width:300px;z-index:2;"; frame.frameBorder = 0; frame.title = "PolyVR widget"; if (!isVis) frame.style.display = "none"; hudFrames[fID] = frame;},  
+ 10903710: function($0, $1, $2, $3, $4) {var fID = $0; var width = $1 * 100.0; var height = $2 * 100.0; var left = $3 * 100.0; var bottom = $4 * 100.0; var frame = hudFrames[fID]; if (frame != undefined) { frame.style.width = width+"vh"; frame.style.height = height+"vh"; frame.style.left = "calc("+left+"vw - "+(width*0.5)+"vh)"; frame.style.top = ((100-bottom)-height*0.5)+"vh"; }},  
+ 10904056: function($0, $1) {var fID = $0; var b = $1; var frame = hudFrames[fID]; if (frame != undefined) { if (b) frame.style.display = "block"; else frame.style.display = "none"; }}
 };
 
 
@@ -9440,6 +9440,15 @@ var ASM_CONSTS = {
       return -1;
     }
 
+  function _ftime(p) {
+      var millis = Date.now();
+      HEAP32[((p)>>2)] = (millis/1000)|0;
+      HEAP16[(((p)+(4))>>1)] = millis % 1000;
+      HEAP16[(((p)+(6))>>1)] = 0; // Obsolete field
+      HEAP16[(((p)+(8))>>1)] = 0; // Obsolete field
+      return 0;
+    }
+
   var GAI_ERRNO_MESSAGES={};
   function _gai_strerror(val) {
       var buflen = 256;
@@ -12192,6 +12201,7 @@ var asmLibraryArg = {
   "fd_sync": _fd_sync,
   "fd_write": _fd_write,
   "fork": _fork,
+  "ftime": _ftime,
   "gai_strerror": _gai_strerror,
   "getTempRet0": _getTempRet0,
   "getaddrinfo": _getaddrinfo,
@@ -12412,6 +12422,9 @@ var __ZN3OSG30PolyVR_setScriptIthArgumentValEPKciS1_ = Module["__ZN3OSG30PolyVR_
 var __ZN3OSG27PolyVR_triggerServerMessageEPKci = Module["__ZN3OSG27PolyVR_triggerServerMessageEPKci"] = createExportWrapper("_ZN3OSG27PolyVR_triggerServerMessageEPKci");
 
 /** @type {function(...*):?} */
+var _proj_context_is_network_enabled = Module["_proj_context_is_network_enabled"] = createExportWrapper("proj_context_is_network_enabled");
+
+/** @type {function(...*):?} */
 var _memset = Module["_memset"] = createExportWrapper("memset");
 
 /** @type {function(...*):?} */
@@ -12434,9 +12447,6 @@ var _ntohs = Module["_ntohs"] = createExportWrapper("ntohs");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
-
-/** @type {function(...*):?} */
-var _proj_context_is_network_enabled = Module["_proj_context_is_network_enabled"] = createExportWrapper("proj_context_is_network_enabled");
 
 /** @type {function(...*):?} */
 var _sysconf = Module["_sysconf"] = createExportWrapper("sysconf");
@@ -12493,13 +12503,13 @@ var _memalign = Module["_memalign"] = createExportWrapper("memalign");
 var dynCall_iiijj = Module["dynCall_iiijj"] = createExportWrapper("dynCall_iiijj");
 
 /** @type {function(...*):?} */
+var dynCall_iiiij = Module["dynCall_iiiij"] = createExportWrapper("dynCall_iiiij");
+
+/** @type {function(...*):?} */
 var dynCall_iiiiijddj = Module["dynCall_iiiiijddj"] = createExportWrapper("dynCall_iiiiijddj");
 
 /** @type {function(...*):?} */
 var dynCall_iiiiij = Module["dynCall_iiiiij"] = createExportWrapper("dynCall_iiiiij");
-
-/** @type {function(...*):?} */
-var dynCall_iiiij = Module["dynCall_iiiij"] = createExportWrapper("dynCall_iiiij");
 
 /** @type {function(...*):?} */
 var dynCall_ji = Module["dynCall_ji"] = createExportWrapper("dynCall_ji");
