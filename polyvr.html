@@ -35,6 +35,9 @@
 			height: 100vh;
 		}
 	</style>
+
+	<link rel="stylesheet" href="editor.css">
+	<script src="editor.js"></script>
 </head>
 
 <body>
@@ -46,6 +49,12 @@
 	<!-- Allow the C++ to access the canvas element --> 
 	<div id="progressBar"></div>
 	<script type='text/javascript'>
+		console.log('HINT: open site with "..?editor" to start with the application editor widgets');
+		const urlParams = new URLSearchParams(window.location.search);
+		var doEditor = urlParams.has('editor');
+
+		if (doEditor) setupEditor();
+
 		var canv = document.getElementById('canvas');
 		var Module = {
 		    canvas: canv,
@@ -77,6 +86,7 @@
 
 		var onPostRun = function() {
 			console.log("------- onPostRun -------");
+			if (doEditor) updateScriptsList();
 		};
 
 		Module.preRun.push(onPreRun);
