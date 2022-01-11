@@ -1,0 +1,188 @@
+.glCanvasWithEditor {
+	display: block;
+	position: fixed;
+	left: 50vw;
+	width: 50vw;	
+	height: 100vh;
+}
+
+#toolbar {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+	position: fixed;
+	left: 0vw;
+	top: 0vh;
+	width: 50vw;
+	height: 5vh;
+	background-color: #88bbdd;
+}
+
+#scripts {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	position: fixed;
+	left: 0vw;
+	top: 5vh;
+	width: 10vw;	
+	height: 95vh;
+	background-color: #cccccc;
+}
+
+#editor {
+	display: flex;
+	flex-direction: row;
+	position: fixed;
+	left: 10vw;
+	top: 20vh;	
+	width: 40vw;
+	height: 80vh;
+}
+
+#editor_lines {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	width: 25px;
+	height: calc(80vh - 6px);
+	background-color: #ddd;
+	font: 400 13.3333px Arial;
+	overflow:hidden;
+	text-align:right;
+}
+
+#editor_area {
+	width: calc(100% - 25px);
+	height: calc(80vh - 6px);
+	white-space: pre;
+	resize: none;
+}
+
+#parameters {
+	display: flex;
+	position: fixed;
+	left: 10vw;
+	top: 5vh;	
+	width: 40vw;
+	height: 15vh;
+	background-color: #dddddd;
+}
+
+#options {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	position: absolute;
+	width: 15%;
+	height: 100%;
+}
+
+#trigs_args {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	left: 15%;
+	width: 85%;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+#trigger {
+	display: flex;
+	flex-direction: row;
+}
+
+#arguments {
+	display: flex;
+	flex-direction: row;
+	background-color: #ccc;
+}
+
+.column {
+	flex-grow: 1;
+	height: 100%;
+	border: 1px solid #aaa;
+}
+
+.header {
+	display: flex;
+	background-color: #aaa;
+	justify-content: center;
+	flex-direction: row;
+	width: 100%;
+}
+
+.script {
+	margin: 0.3vh;
+}
+
+.selectedScript {
+	background-color: #aaddff;
+}
+
+.toolButton {
+	margin: 0.5vh;
+	height: 4vh;
+	width: 4vh;
+}
+
+.disabledButton {
+	display: none;		
+}
+
+.newEntry {
+	display: flex;
+	color: #444;
+	font-style: italic;
+	justify-content: center;
+	width: 100%;
+	background: none;		
+}
+
+.paramEntry {
+	display: flex;
+	color: #444;
+	font-weight: bold;
+	justify-content: center;
+	width: 100%;
+	background: none;		
+}
+
+@keyframes blink {
+    0% {
+      opacity: 0;
+    }
+
+    20% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+}
+
+.idle span {
+    opacity: 0;
+}
+
+.saving span {
+    display: inline-block;
+    animation-name: blink;
+    animation-duration: 0.4s;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    background-color: #26c;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.saving span:nth-child(2) {
+    animation-delay: .05s;
+}
+
+.saving span:nth-child(3) {
+    animation-delay: .1s;
+}

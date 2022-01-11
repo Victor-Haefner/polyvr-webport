@@ -9,6 +9,7 @@
 	<style>
 		body {
 			margin: 0px;
+			overflow: hidden;
 		}
 
 		#progressBar {
@@ -19,30 +20,41 @@
 			width: 0%;
 			height: 30px;
 			background-color: #4CAF50;
-			text-align: center; /* To center it horizontally (if you want) */
+			text-align: left; /* To center it horizontally (if you want) */
 			line-height: 30px; /* To center it vertically */
 			color: white;
 			margin: 0px;
 			z-index: 1;
 		}
 
-		#canvas {
+		.glCanvas {
 			display: block;
-			width: 100vw;	
+			position: fixed;
+			left: 0vw;
+			width: 100vw;
 			height: 100vh;
 		}
 	</style>
+
+	<link rel="stylesheet" href="editor.css">
+	<script src="editor.js"></script>
 </head>
 
 <body>
 	<!-- Create the canvas that the C++ code will draw into -->
-	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+	<canvas id="canvas" class="glCanvas" oncontextmenu="event.preventDefault()"></canvas>
 
 	<script src="storage.js"></script>
 
 	<!-- Allow the C++ to access the canvas element --> 
 	<div id="progressBar"></div>
 	<script type='text/javascript'>
+		console.log('HINT: open site with "..?editor" to start with the application editor widgets');
+		const urlParams = new URLSearchParams(window.location.search);
+		var doEditor = urlParams.has('editor');
+
+		if (doEditor) setupEditor();
+
 		var canv = document.getElementById('canvas');
 		var Module = {
 		    canvas: canv,
@@ -53,7 +65,7 @@
 		function handleFromPolyVR(msg) {
 			console.log("handleFromPolyVR: "+msg);
 			var params = msg.split('|');
-			if (params[0] == 'setProgress') setProgress( parseFloat(params[1]) );
+			if (params[0] == 'setProgress') setProgress( parseFloat(params[1]), params[2] );
 		}
 
 		function checkResize(time) {
@@ -72,11 +84,16 @@
 			ENV.PYTHONHOME = "/python:/python";
 		};
 
-		Module.preRun.push(onPreRun)
+		var onPostRun = function() {
+			console.log("------- onPostRun -------");
+			if (doEditor) updateScriptsList();
+		};
+
+		Module.preRun.push(onPreRun);
+		Module.onRuntimeInitialized = onPostRun;
 
 		var onInit = function() {
 			getRessource('polyvr.wasm', true); // force reload for developing
-
 		};
 
 		function preloadFile(path) {
@@ -159,6 +176,20 @@
 			FS.unlink('PROJECT.pvr');
 			preloadFile('PROJECT.pvr');
 			setTimeout( function() { __ZN3OSG18PolyVR_reloadSceneEv(); }, 2000 );
+		}
+
+		var hudFrames = {};
+		var clients = [];
+
+		window.addEventListener("message", (event) => {
+			if (clients.indexOf(event.source) == -1) clients.push(event.source);
+			var cID = clients.indexOf(event.source);
+			var sMsgPtr = allocate(intArrayFromString(event.data), 0);
+			__ZN3OSG27PolyVR_triggerServerMessageEPKci(sMsgPtr,cID);
+		}, false);
+
+		function sendToClient(cID, msg) {
+			clients[cID].postMessage(msg, window.origin);
 		}
 	</script>
 </body>
