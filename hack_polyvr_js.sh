@@ -6,3 +6,7 @@ sed '/function getBinaryPromise() {/a if (storage.ressource) {\n\tconsole.log("u
 sed 'N;/function instantiateAsync() {\n    if (!wasmBinary &&/a !storage.ressource &&' -i polyvr.js
 sed 's/window.addEventListener/Module["canvas"].addEventListener/g' -i polyvr.js
 sed 's/if (buffer.buffer === HEAP8.buffer) {/if (HEAP8 \&\& buffer.buffer === HEAP8.buffer) {/g' -i polyvr.js
+
+# webxr changes to rendering and webgl context
+sed 's/majorVersion: 2,/majorVersion: 2,\n            xrCompatible: true,/g' -i polyvr.js
+sed 's/wasmTable.get(GLUT.displayFunc)();/if (!xrSession) { wasmTable.get(GLUT.displayFunc)(); }/g' -i polyvr.js
