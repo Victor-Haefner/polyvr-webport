@@ -52,6 +52,7 @@
 		console.log('HINT: open site with "..?editor" to start with the application editor widgets');
 		const urlParams = new URLSearchParams(window.location.search);
 		var doEditor = urlParams.has('editor');
+		var xrSession = 0;
 
 		if (doEditor) setupEditor();
 
