@@ -6,6 +6,13 @@ function setupWebXR() {
   btn.id = "toggleXRbutton";
   btn.addEventListener('click', toggleXR);
   document.body.appendChild(btn);
+
+  if (document.getElementById("hudDiv")) {
+  } else {
+    var div = document.createElement("div");
+    div.id = "hudDiv";
+    document.body.appendChild(div);
+  }
 }
 
 function xrResize() {
@@ -140,7 +147,7 @@ function toggleXR(){
           navigator.xr.requestSession('immersive-ar', {
               requiredFeatures: ['hit-test','local-floor'],
               optionalFeatures: ['dom-overlay'],
-              domOverlay: { root: overlay } }
+              domOverlay: { root: hudDiv } }
           ).then(onSessionStarted);
         } else {
           xrSession.end();
