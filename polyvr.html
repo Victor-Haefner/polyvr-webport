@@ -74,13 +74,15 @@
 		}
 
 		function checkResize(time) {
-		  var displayWidth  = canv.clientWidth;
-		  var displayHeight = canv.clientHeight;
-		  if (canv.width  != displayWidth || canv.height != displayHeight) {
-		    console.log("checkResize "+time);
-		    if (typeof _glutReshapeWindow === "function") _glutReshapeWindow(displayWidth, displayHeight);
-		  }
-		  window.requestAnimationFrame(checkResize);
+			if (!xrSession) {
+				var displayWidth  = canv.clientWidth;
+				var displayHeight = canv.clientHeight;
+				if (canv.width  != displayWidth || canv.height != displayHeight) {
+					console.log("checkResize "+time);
+					if (typeof _glutReshapeWindow === "function") _glutReshapeWindow(displayWidth, displayHeight);
+				}
+				window.requestAnimationFrame(checkResize);
+			}
 		}
 
 		Module.arguments.push('--application=PROJECT.pvr');
