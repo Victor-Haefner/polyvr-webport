@@ -1,4 +1,8 @@
 //webxr
+var allocations = [];
+var xrHitTestSource = null;
+var xrLastKnownHit = null;
+var xrLastKnownHitOri = null;
 
 function setupWebXR() {
   let btn = document.createElement("button");
@@ -46,12 +50,44 @@ function initWebGL2(attributes) {
   xrResize();
 }
 
+function webxrStr(s) {
+  ptr = allocate(intArrayFromString(s),0);
+  setTimeout(function(){ _free(ptr); }, 5000);
+  return ptr;
+}
+
+function webxrStrVec(v) {
+  var N = v.length;
+  //console.log("Länge ist: ", N);
+  var arr = new Uint32Array(N);
+  for (var i=0; i<N; i++) arr[i] = webxrStr(v[i]);
+  ptr = Module._malloc(arr.length * arr.BYTES_PER_ELEMENT);
+  allocations.push(ptr);
+  Module.HEAPU32.set(arr, ptr >> 2);
+  return ptr;
+}
+
+function execScript(s, p) {
+  __ZN3OSG20PolyVR_triggerScriptEPKcPS1_i(webxrStr(s), webxrStrVec(p), p.length);
+  for (var i=0; i<allocations.length; i++) _free(allocations[i]);
+  allocations = [];
+}
+
 function onSelect(event){
   /*
   let elem = document.getElementById('debugDiv2');
   let debugText = 'finger select event tirggered'
   elem.insertAdjacentHTML('beforeend', debugText);
   */
+}
+
+function onSessionEnded() {
+  console.log("Stopping XR Session");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  xrSession = null;
+  xrHitTestSource.cancel();
+  xrHitTestSource = null;
+  checkResize(0);
 }
 
 function onSessionStarted(_session) {
@@ -61,6 +97,7 @@ function onSessionStarted(_session) {
   xrSession.addEventListener('select', onSelect);
 
   initWebGL2({xrCompatible: true});
+  execScript('cam_saveZero',[]);
 
   xrSession.updateRenderState({baseLayer: new XRWebGLLayer(xrSession, gl)});
 
@@ -91,6 +128,7 @@ function onSessionStarted(_session) {
       //console.log(tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString());
       let glLayer = session.renderState.baseLayer;
   
+      
       for (let view of pose.views) {
         let viewport = glLayer.getViewport(view);
 
@@ -106,36 +144,24 @@ function onSessionStarted(_session) {
       if (xrHitTestSource) {
         let hitTestResults = frame.getHitTestResults(xrHitTestSource);
         if (hitTestResults.length > 0) {
-          document.querySelector('#place').style.color = "green";
           let pointerPose = hitTestResults[0].getPose(xrRefSpace);
           xrLastKnownHit = pointerPose.transform.position.toJSON();
           xrLastKnownHitOri = pointerPose.transform.orientation.toJSON();
           let tr = pointerPose.transform.position;
           let q1 = pointerPose.transform.orientation;
-          execScript('handle',['pointer|place',tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString()]);
+          //execScript('handle',['pointer|place',tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString()]);
         }
         else {
-          document.querySelector('#place').style.color = "red";
         }
       }
+      
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, glLayer.framebuffer);
-      //gl.clearColor(0.4, 0.7, 0.9, 1.0);
-      //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       wasmTable.get(GLUT.displayFunc)();
     }
     else {
       console.log("Tracking lost!");
     }
-  }
-
-  function onSessionEnded() {
-    console.log("Stopping XR Session");
-    xrSession = null;
-    xrHitTestSource.cancel();
-    xrHitTestSource = null;
-    window.requestAnimationFrame(checkResize);
-    //wasmTable.get(GLUT.displayFunc)();
   }
 }
 
@@ -155,6 +181,7 @@ function toggleXR(){
       }
       else {
         console.log('tried starting AR, but not supported');
+        document.getElementById('toggleXRbutton').innerHTML = "WebXR not supported!";
       }
     });
   }
