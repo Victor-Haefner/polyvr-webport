@@ -1709,12 +1709,12 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  10861848: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
- 10862601: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }},  
- 10862711: function($0, $1) {var msg = Module.UTF8ToString($0); var cID = $1; sendToClient(cID, msg);},  
- 10862788: function($0, $1, $2) {var fID = $0; var isVis = $1; var uri = Module.UTF8ToString($2); var parts = uri.split("/"); uri = parts[parts.length - 1]+".html"; var frame = document.createElement("iframe"); if (document.getElementById("hudDiv")) { document.getElementById("hudDiv").appendChild(frame); } else { var div = document.createElement("div"); div.id = "hudDiv"; document.body.appendChild(div); div.appendChild(frame); } frame.src = uri; frame.style = "position:absolute;top:0;right:0;height:300px;width:300px;z-index:2;"; frame.frameBorder = 0; frame.title = "PolyVR widget"; if (!isVis) frame.style.display = "none"; hudFrames[fID] = frame;},  
- 10863414: function($0, $1, $2, $3, $4) {var fID = $0; var width = $1 * 100.0; var height = $2 * 100.0; var left = $3 * 100.0; var bottom = $4 * 100.0; var frame = hudFrames[fID]; if (frame != undefined) { frame.style.width = width+"vh"; frame.style.height = height+"vh"; frame.style.left = "calc("+left+"vw - "+(width*0.5)+"vh)"; frame.style.top = ((100-bottom)-height*0.5)+"vh"; }},  
- 10863760: function($0, $1) {var fID = $0; var b = $1; var frame = hudFrames[fID]; if (frame != undefined) { if (b) frame.style.display = "block"; else frame.style.display = "none"; }}
+  10879288: function($0) {var uri = Module.UTF8ToString($0); var uri2 = "proxy.php?uri="+encodeURIComponent(uri); console.log(uri2); var request = new XMLHttpRequest(); request.open("GET", uri2, false); request.overrideMimeType("text/plain; charset=x-user-defined"); request.send(); const byteCount = request.responseText.length; const responsePtr = Module._malloc(byteCount+16); var byteCountStr = ("000000000000000" + byteCount).slice(-16); Module.stringToUTF8(byteCountStr, responsePtr, 17); function putOnHeap(str, outIdx, maxBytesToWrite) { var endIdx = outIdx + maxBytesToWrite; for (var i = 0; i < str.length; ++i) { if (outIdx >= endIdx) break; HEAPU8[outIdx++] = str.charCodeAt(i); } } putOnHeap(request.responseText, responsePtr+16, byteCount); return responsePtr;},  
+ 10880041: function($0) {var msg = Module.UTF8ToString($0); if (typeof handleFromPolyVR === "function") { handleFromPolyVR(msg); }},  
+ 10880151: function($0, $1) {var msg = Module.UTF8ToString($0); var cID = $1; sendToClient(cID, msg);},  
+ 10880228: function($0, $1, $2) {var fID = $0; var isVis = $1; var uri = Module.UTF8ToString($2); var parts = uri.split("/"); uri = parts[parts.length - 1]+".html"; var frame = document.createElement("iframe"); if (document.getElementById("hudDiv")) { document.getElementById("hudDiv").appendChild(frame); } else { var div = document.createElement("div"); div.id = "hudDiv"; document.body.appendChild(div); div.appendChild(frame); } frame.src = uri; frame.style = "position:absolute;top:0;right:0;height:300px;width:300px;z-index:2;"; frame.frameBorder = 0; frame.title = "PolyVR widget"; if (!isVis) frame.style.display = "none"; hudFrames[fID] = frame;},  
+ 10880854: function($0, $1, $2, $3, $4) {var fID = $0; var width = $1 * 100.0; var height = $2 * 100.0; var left = $3 * 100.0; var bottom = $4 * 100.0; var frame = hudFrames[fID]; if (frame != undefined) { frame.style.width = width+"vh"; frame.style.height = height+"vh"; frame.style.left = "calc("+left+"vw - "+(width*0.5)+"vh)"; frame.style.top = ((100-bottom)-height*0.5)+"vh"; }},  
+ 10881200: function($0, $1) {var fID = $0; var b = $1; var frame = hudFrames[fID]; if (frame != undefined) { if (b) frame.style.display = "block"; else frame.style.display = "none"; }}
 };
 
 
@@ -12399,6 +12399,9 @@ var _ntohs = Module["_ntohs"] = createExportWrapper("ntohs");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
+
+/** @type {function(...*):?} */
+var __Z13WebXR_setPosePKcfffffff = Module["__Z13WebXR_setPosePKcfffffff"] = createExportWrapper("_Z13WebXR_setPosePKcfffffff");
 
 /** @type {function(...*):?} */
 var _saveSetjmp = Module["_saveSetjmp"] = createExportWrapper("saveSetjmp");
