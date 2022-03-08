@@ -9,6 +9,7 @@
     <Device base_name="keyboard" name="keyboard" name_space="__global__" name_suffix="0" persistency="666" type="keyboard"/>
     <Device base_name="mouse" name="mouse" name_space="__global__" name_suffix="0" persistency="666" type="mouse"/>
     <Device base_name="server1" name="server1" name_space="__global__" name_suffix="0" persistency="666" type="server"/>
+    <Device base_name="webxr" name="webxr" name_space="__global__" name_suffix="0" persistency="666" type="webxr"/>
   </Devices>
   <TrackingART active="0" axis="0 1 2" offset="0 0 0" persistency="666" port="5000" up=""/>
   <TrackingVRPN active="0" persistency="666" port="3883" verbose="0"/>

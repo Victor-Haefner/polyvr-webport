@@ -124,11 +124,11 @@ function onSessionStarted(_session) {
       let tr = pose.transform.position;
       let q1 = pose.transform.orientation;
 
-      execScript('cam_handler',[tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString()]);
+      //execScript('cam_handler',[tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString()]);
       //console.log(tr.x.toString(), tr.y.toString(), tr.z.toString(),q1.x.toString(),q1.y.toString(),q1.z.toString(),q1.w.toString());
+      __Z13WebXR_setPosePKcfffffff('head',tr.x, tr.y, tr.z,q1.x,q1.y,q1.z,q1.w); //_Z13WebXR_setPosePKcfffffff
       let glLayer = session.renderState.baseLayer;
   
-      
       for (let view of pose.views) {
         let viewport = glLayer.getViewport(view);
 
