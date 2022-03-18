@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+ <html>
+
+ <head>
+ 	<style type="text/css">
+ 		button {
+ 			font-size:20vh;
+ 			width:95vw;
+ 			height:60vh;
+ 		}
+ 	</style>
+ 	<script>
+ 		window.addEventListener('message', (event) => {
+    handle(event.data);
+}, false);
+setTimeout(function(){  send('register|hud');  }, 1000);
+	/*var websocket = new WebSocket('ws://localhost:$PORT_server1$');
+ 		websocket.onopen = function() { send('register|hud'); };
+ 		websocket.onerror = function(e) {};
+ 		websocket.onmessage = function(m) { if(m.data) handle(m.data); };
+ 		websocket.onclose = function(e) {};*/
+
+ 		
+function send(m) {
+    window.parent.postMessage(m, window.origin);
+}
+
+ 		function handle(m) { console.log(m); };
+ 	</script>
+ </head>
+
+ <body>
+ 	<button onclick="send('run')">Toggle</button>
+ </body>
+ </html>
