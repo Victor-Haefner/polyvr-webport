@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene base_name="PROJECT" name_space="Scene" name_suffix="1" persistency="666">
   <Objects>
-    <Object base_name="Root" name_space="__global__" name_suffix="1" persistency="666" pickable="0" type="Object" visible="4,294,967,295">
-      <Object ambient="0.3 0.3 0.3 1" base_name="light" beacon="Headlight_beacon" diffuse="1 1 1 1" lightType="point" name_space="__global__" name_suffix="0" on="1" persistency="666" photometricMap="" pickable="0" shadow="0" shadowColor="0.1 0.1 0.1 1" shadowMapRes="2,048" shadowVolume="1.79769e+308 1.79769e+308 1.79769e+308 -1.79769e+308 -1.79769e+308 -1.79769e+308 1" specular="0.1 0.1 0.1 1" type="Light" visible="4,294,967,295">
-        <Object accept_root="1" aspect="1" at="0.171163 0.0739542 0.0100001" at_dir="0" base_name="Default" camType="perspective" far="512" fov="1.0472" from="-0.231703 0.252379 0.44626" name_space="__global__" name_suffix="0" near="0.1" orthoSize="100" persistency="666" pickable="0" scale="1 1 1" type="Camera" up="0 1 0" visible="4,294,967,295">
+    <Object base_name="Root" name_space="__global__" name_suffix="1" persistency="666" pickable="0" type="Object" visible="4294967295">
+      <Object ambient="0.3 0.3 0.3 1" base_name="light" beacon="Headlight_beacon" diffuse="1 1 1 1" lightType="point" name_space="__global__" name_suffix="0" on="1" persistency="666" photometricMap="" pickable="0" shadow="0" shadowColor="0.1 0.1 0.1 1" shadowMapRes="2" shadowVolume="1.79769e+308 1.79769e+308 1.79769e+308 -1.79769e+308 -1.79769e+308 -1.79769e+308 1" specular="0.1 0.1 0.1 1" type="Light" visible="4294967295">
+        <Object accept_root="1" aspect="1" at="0.171163 0.0739542 0.0100001" at_dir="0" base_name="Default" camType="perspective" far="512" fov="1.0472" from="-0.231703 0.252379 0.44626" name_space="__global__" name_suffix="0" near="0.1" orthoSize="100" persistency="666" pickable="0" scale="1 1 1" type="Camera" up="0 1 0" visible="4294967295">
           <attachments>
             <Node base_name="transform" name_space="VRAttachment" name_suffix="0" persistency="666" value=""/>
           </attachments>
-          <Object at="0 0 -1" at_dir="0" base_name="Headlight_beacon" from="0 0 0" light="light" name_space="__global__" name_suffix="0" persistency="666" pickable="0" scale="1 1 1" type="LightBeacon" up="0 1 0" visible="4,294,967,295">
+          <Object at="0 0 -1" at_dir="0" base_name="Headlight_beacon" from="0 0 0" light="light" name_space="__global__" name_suffix="0" persistency="666" pickable="0" scale="1 1 1" type="LightBeacon" up="0 1 0" visible="4294967295">
             <attachments>
               <Node base_name="transform" name_space="VRAttachment" name_suffix="0" persistency="666" value=""/>
             </attachments>
@@ -25,7 +25,7 @@
       <core>
 	import VR
 	if not hasattr(VR,'isRunning'): VR.isRunning = True
-	
+
 	m = dev.getMessage()
 	if m == 'run': VR.isRunning = not VR.isRunning
 	print(m)
@@ -141,7 +141,6 @@
 	import VR
 
 	print('hello world!')
-
 </core>
     </Script>
     <Script base_name="update" group="no group" name_space="__script__" name_suffix="0" persistency="666" pyVersion="3.10.12" server="server1" type="Python">
