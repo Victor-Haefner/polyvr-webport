@@ -78,7 +78,7 @@
 				var displayWidth  = canv.clientWidth;
 				var displayHeight = canv.clientHeight;
 				if (canv.width  != displayWidth || canv.height != displayHeight) {
-					console.log("checkResize "+time);
+					//console.log("checkResize "+time);
 					if (typeof _glutReshapeWindow === "function") _glutReshapeWindow(displayWidth, displayHeight);
 				}
 				window.requestAnimationFrame(checkResize);
@@ -89,6 +89,7 @@
 
 		var onPreRun = function() {
 			ENV.PYTHONHOME = "/python:/python";
+			preloadRessources();
 		};
 
 		var onPostRun = function() {
@@ -100,21 +101,26 @@
 		Module.onRuntimeInitialized = onPostRun;
 
 		var onInit = function() {
+			WebAssembly.promising = false;
 			getRessource('polyvr.wasm', true); // force reload for developing
 		};
-
+		
+		function postPreload(file, folder) {
+			;
+		}
+		
 		function preloadFile(path) {
-			var parent = '/';
-			var file = path;
-			if (path.indexOf('/') > -1) {
-				parent = '/' + path.replace(/\/[^\/]+$/, '');
+ 			var parent = '/';
+ 			var file = path;
+
+ 			if (path.indexOf('/') > -1) {
+ 				parent = '/' + path.replace(/\/[^\/]+$/, '');
 				FS.createPath('/', parent, true, true);
-				parent = '/'+parent;
-				file = path.split("/").pop();
-			}
-			console.log('preloadFile: ' + path + ", file: " + file + " in parent folder: " + parent);
-			FS.createPreloadedFile(parent, file, path, true, true);		
-		};
+ 				file = path.split("/").pop();
+ 			}
+ 			console.log('preloadFile: ' + path + ", file: " + file + " in parent folder: " + parent);
+			FS.createPreloadedFile(parent, file, path, true, true, async function () { postPreload(parent + '/' + file, parent); });
+		}
 
 		function scanDir(path, onGet) {
 			//console.log('scanDir '+path);
@@ -129,36 +135,45 @@
 			req.send(null);
 		}
 
-		function preloadFolder(path, stack = []) {
-			console.log('preloadFolder '+path);
+		async function preloadFolderRec(path, stack = []) {
 			FS.mkdir('/'+path);
 			scanDir(path, function(content) {
 				var files = content.files;
 				if (files.length > 0 && files[0] != "") {
-					for (var file in content.files) preloadFile(path+"/"+files[file]);
+						for (var file in content.files) preloadFile(path+"/"+files[file]);
 				}
 				var dirs = content.dirs;
 				if (dirs.length > 0 && dirs[0] != "") {
 					for(var i=0;i<dirs.length;i++) dirs[i]=path+"/"+dirs[i];
 					stack.push.apply(stack, dirs);
 				}
-				if (stack.length > 0) preloadFolder(stack.pop(), stack);
+				if (stack.length > 0) preloadFolderRec(stack.pop(), stack);
 			});
 		};
+		
+		function preloadFolder(path) {
+			console.log('preloadFolder '+path);
+			preloadFolderRec(path);
+		}
 
-		var onScriptLoaded = function() { 
-			console.log(' preload files'); 
-			preloadFile('Browser.xml');
-			preloadFile('PROJECT.pvr');
-			preloadFile('Mono.ttf');
-			preloadFile('proj.db');
+		function preloadRessources() { 
+			console.log(' preload files');
+			preloadFile("Browser.xml"),
+			preloadFile("PROJECT.pvr"),
+			preloadFile("Mono.ttf"),
+			preloadFile("proj.db"),
+			preloadFile("lib/python3.14.zip")
+			preloadFile("lib/python3.14/lib-dynload/.keep")
+			
+			ENV.PYTHONHOME = '/';
+			ENV.PYTHONPATH = `/lib/python3.14.zip`;
+			
 			//INCLUDE_PRELOAD_HOOK
 		};
 
 		var onLoaded = function() { 
 			console.log(' loaded polyvr wasm!'); 
 			var script = document.createElement('script');
-			script.onload = function() { onScriptLoaded(); };
 			script.src = 'polyvr.js';
 			document.body.appendChild(script);
 			checkResize(0); // start resize check loop

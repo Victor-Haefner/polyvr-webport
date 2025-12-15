@@ -3,3 +3,5 @@ core
 *.blend1
 *~
 .treeLods
+GPUCache
+imgui.ini

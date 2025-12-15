@@ -74,12 +74,11 @@ function setupRequest() {
 };
 
 function loadRessource(p) {
-	console.log('loadRessource');
+	console.log('loadRessource '+p);
 	storage.path = p;
-	console.log('load ressource!');
 	storage.request.open( 'GET', storage.path, true );
 	storage.request.send();
-	console.log('loadRessource done');
+	console.log(' ' + p + ' loaded');
 };
 
 function getRessource(p, force = false) {
