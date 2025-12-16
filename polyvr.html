@@ -78,8 +78,8 @@
 				var displayWidth  = canv.clientWidth;
 				var displayHeight = canv.clientHeight;
 				if (canv.width  != displayWidth || canv.height != displayHeight) {
-					//console.log("checkResize "+time);
-					if (typeof _glutReshapeWindow === "function") _glutReshapeWindow(displayWidth, displayHeight);
+					console.log("checkResize "+time+" "+displayWidth+" "+canv.width);
+					window.dispatchEvent(new Event("resize"));
 				}
 				window.requestAnimationFrame(checkResize);
 			}
@@ -136,7 +136,7 @@
 		}
 
 		async function preloadFolderRec(path, stack = []) {
-			FS.mkdir('/'+path);
+			FS.mkdirTree('/'+path);
 			scanDir(path, function(content) {
 				var files = content.files;
 				if (files.length > 0 && files[0] != "") {
